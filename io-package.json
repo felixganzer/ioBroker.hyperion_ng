@@ -1,0 +1,76 @@
+{
+    "common": {
+        "name": "hyperion_ng",
+        "version": "0.0.1",
+        "news": {
+            "0.0.1": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "hyperion.NG",
+        "titleLang": {
+            "en": "hyperion.NG",
+            "de": "hyperion.NG",
+            "ru": "hyperion.NG",
+            "pt": "hyperion.NG",
+            "nl": "hyperion.NG",
+            "fr": "hyperion.NG",
+            "it": "hyperion.NG",
+            "es": "hyperion.NG",
+            "pl": "hyperion.NG",
+            "zh-cn": "超离子"
+        },
+        "desc": {
+            "en": "this is a short description",
+            "de": "Dies ist eine kurze Beschreibung",
+            "ru": "это краткое описание",
+            "pt": "esta é uma breve descrição",
+            "nl": "dit is een korte omschrijving",
+            "fr": "ceci est une brève description",
+            "it": "questa è una breve descrizione",
+            "es": "esta es una breve descripción",
+            "pl": "to jest krótki opis",
+            "zh-cn": "这是一个简短的描述"
+        },
+        "authors": [
+            "felixganzer <felixganzer@web.de>"
+        ],
+        "keywords": [
+            "hyperion"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "hyperion_ng.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/felixganzer/ioBroker.hyperion_ng/master/admin/hyperion_ng.png",
+        "readme": "https://github.com/felixganzer/ioBroker.hyperion_ng/blob/master/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "lighting",
+        "compact": true,
+        "connectionType": "local",
+        "dataSource": "push",
+        "materialize": true,
+        "dependencies": [
+            {
+                "js-controller": ">=2.0.0"
+            }
+        ]
+    },
+    "native": {
+        "option1": true,
+        "option2": "42"
+    },
+    "objects": [],
+    "instanceObjects": []
+}

@@ -1,0 +1,37 @@
+{
+    "cli": true,
+    "adapterName": "hyperion_ng",
+    "title": "hyperion.NG",
+    "description": "this is a short description",
+    "keywords": [
+        "hyperion"
+    ],
+    "expert": "no",
+    "features": [
+        "adapter"
+    ],
+    "adminFeatures": [],
+    "type": "lighting",
+    "startMode": "daemon",
+    "connectionType": "local",
+    "dataSource": "push",
+    "connectionIndicator": "no",
+    "language": "JavaScript",
+    "adminReact": "no",
+    "tools": [
+        "ESLint",
+        "type checking"
+    ],
+    "indentation": "Space (4)",
+    "quotes": "single",
+    "es6class": "yes",
+    "authorName": "felixganzer",
+    "authorGithub": "felixganzer",
+    "authorEmail": "felixganzer@web.de",
+    "gitRemoteProtocol": "HTTPS",
+    "gitCommit": "no",
+    "license": "MIT License",
+    "ci": "gh-actions",
+    "dependabot": "no",
+    "creatorVersion": "1.31.0"
+}
