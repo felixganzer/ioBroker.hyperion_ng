@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "hyperion_ng",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "news": {
             "0.0.1": {
                 "en": "initial release",
@@ -68,8 +68,9 @@
         ]
     },
     "native": {
-        "option1": true,
-        "option2": "42"
+        "address": "127.0.0.1",
+        "json_port": 19444,
+        "prio": 100
     },
     "objects": [],
     "instanceObjects": []
