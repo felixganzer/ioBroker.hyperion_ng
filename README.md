@@ -95,6 +95,9 @@ For later updates, the above procedure is not necessary. Just do the following:
 
 ## Changelog
 
+### 0.1.0
+* (felixganzer) creating api class to communicate with hyperion and adding read out instances of hyperionNG
+
 ### 0.0.1
 * (felixganzer) initial release
 
