@@ -76,11 +76,6 @@ class Hyperion_API
             this.parseData(data);
         }.bind(this));
 
-        // this.socket.on('data', data => {
-        //     adapterMain.log.debug('data: ' + data);
-        //     this.parseData(data);
-        //   });
-
         this.socket.on('timeout', () => {
             console.log('socket timeout');
             if (this.socket) {this.socket.end();};
