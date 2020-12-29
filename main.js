@@ -7,6 +7,10 @@
 // The adapter-core module gives you access to the core ioBroker functions
 // you need to create an adapter
 const utils = require('@iobroker/adapter-core');
+const Hyperion_API = require('./hyperion_API');
+
+var hyperion_API;
+var adapter = null;
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
@@ -21,6 +25,9 @@ class HyperionNg extends utils.Adapter {
             ...options,
             name: 'hyperion_ng',
         });
+
+        adapter = this; // set this Class as this adapter for using logging global;
+
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
         // this.on('objectChange', this.onObjectChange.bind(this));
@@ -28,61 +35,51 @@ class HyperionNg extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
     }
 
+    async readOutInstances() {
+
+        hyperion_API.getServerInfo(function(err, result){
+            adapter.log.debug(JSON.stringify(result));
+            if( err == null && result.command == 'serverinfo') {
+
+                var my_instances = result.info.instance;
+                for (var instance in my_instances){
+                
+                    var my_instance_ID = instance;
+                    var my_instance_Name = my_instances[instance].friendly_name;
+                    var my_instance_running = my_instances[instance].running;
+
+                    var myobj = {type: 'Instance_ID',common: {name: my_instance_Name}, native:{id: my_instance_Name}};
+                    adapter.setObject(my_instance_ID.toString(), myobj);
+
+                    myobj = {type: 'state', common: {role: 'running status', type: 'boolean', name: my_instance_Name}, native:{id: my_instance_ID + my_instance_Name}};
+                    adapter.setObject(my_instance_ID + '.' + 'running', myobj);
+                    adapter.setState(my_instance_ID + '.' + 'running', my_instance_running);
+
+                }
+            }
+            else {
+                adapter.log.error('Error at read out instances');
+            }
+
+            adapter.log.debug(JSON.stringify(result));
+        }, 0);
+    }
+
     /**
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
-        // Initialize your adapter here
 
-        // The adapters config (in the instance object everything under the attribute "native") is accessible via
-        // this.config:
-        this.log.info('config option1: ' + this.config.option1);
-        this.log.info('config option2: ' + this.config.option2);
+        hyperion_API = new Hyperion_API.Hyperion_API(this.config['address'], this.config['json_port'],this);
 
-        /*
-        For every state in the system there has to be also an object of type state
-        Here a simple template for a boolean variable named "testVariable"
-        Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-        */
-        await this.setObjectNotExistsAsync('testVariable', {
-            type: 'state',
-            common: {
-                name: 'testVariable',
-                type: 'boolean',
-                role: 'indicator',
-                read: true,
-                write: true,
-            },
-            native: {},
-        });
+        await this.readOutInstances();
+        // hyperion_API.getServerInfo(function(err, result){
+        //     adapter.log.info('socket Connection: ' + hyperion_API.connected);
+        //     adapter.log.info('communication successfull');
+        //     adapter.log.info(JSON.stringify(result));
+        // }, 0);
 
-        // In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
         this.subscribeStates('testVariable');
-        // You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-        // this.subscribeStates('lights.*');
-        // Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-        // this.subscribeStates('*');
-
-        /*
-            setState examples
-            you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-        */
-        // the variable testVariable is set to true as command (ack=false)
-        await this.setStateAsync('testVariable', true);
-
-        // same thing, but the value is flagged "ack"
-        // ack should be always set to true if the value is received from or acknowledged from the target system
-        await this.setStateAsync('testVariable', { val: true, ack: true });
-
-        // same thing, but the state is deleted after 30s (getState will return null afterwards)
-        await this.setStateAsync('testVariable', { val: true, ack: true, expire: 30 });
-
-        // examples for the checkPassword/checkGroup functions
-        let result = await this.checkPasswordAsync('admin', 'iobroker');
-        this.log.info('check user admin pw iobroker: ' + result);
-
-        result = await this.checkGroupAsync('admin', 'admin');
-        this.log.info('check group user admin group admin: ' + result);
     }
 
     /**
