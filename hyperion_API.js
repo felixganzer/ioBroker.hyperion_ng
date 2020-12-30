@@ -88,9 +88,9 @@ class Hyperion_API
     }
 
     /**
-     * This method parses incoming data, and fires the corresponding callback
+     * This method check connection to socket and reconnect if neccessary, and fires the corresponding callback
      *
-     * @param {string} data			data string
+     * @param {Function} callback	callback function, using (err, result)
      */
     async checkConnection(callback) {
 
@@ -106,9 +106,10 @@ class Hyperion_API
     }
 
     /**
-     * This method parses incoming data, and fires the corresponding callback
+     * Send a message
      *
-     * @param {string} data			data string
+     * @param {object} message		can be anything, but an invalid object might crasg hyperion
+     * @param {Function} callback	callback function, using (err, result)
      */
     async sendMessage(message, callback){
 
@@ -128,7 +129,7 @@ class Hyperion_API
         }
     }
     
-        /**
+    /**
      * Get server information, if you use more than one LED-Hardware instance it is necessary to set at first
      * the instance ID. The response of this communication will be trown away.
      *
@@ -141,14 +142,48 @@ class Hyperion_API
         const self = this;
 
         self.sendMessage({
-            command: "instance",
-            subcommand : "switchTo",
-            instance : instance
+            command     : "instance",
+            subcommand  : "switchTo",
+            instance    : parseInt(instance)
         },function(){
             self.databuffer = '';
-            self.sendMessage({
-                command: 'serverinfo'
-            }, callback);
+            setTimeout(function () {
+                self.sendMessage({
+                    command : 'serverinfo'
+                }, callback);
+            },50) ;
+        });
+    }
+
+    /**
+     * Get server information, if you use more than one LED-Hardware instance it is necessary to set at first
+     * the instance ID. The response of this communication will be trown away.
+     *
+     * @param {String}      component	name of component to have change
+     * @param {boolean}     state	    state of component to have set
+     * @param {integer}     instance    hyperion instance number to get informations for the correct one
+     * @param {Function}    callback	callback function, using (err, result)
+     */
+    async setComponentStatus(component, state, instance, callback) {
+        adapterMain.log.info('set component ' + component + ' of instance ' + instance + ' to ' + state);
+
+        const self = this;
+
+        self.sendMessage({
+            command     : "instance",
+            subcommand  : "switchTo",
+            instance    : parseInt(instance)
+        },function(){
+            self.databuffer = '';
+            setTimeout(function () {
+                self.sendMessage({
+                    command         : 'componentstate',
+                    componentstate  : {
+                    component       : component,
+                    state           : state
+                    }
+                }, callback);
+            },50) ;
         });
     }
 }

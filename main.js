@@ -36,6 +36,10 @@ class HyperionNg extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
     }
 
+    /**
+     * Is called when adapter shuts down - callback has to be called under any circumstances!
+     * @param {() => void} callback
+     */
     async readOutInstances(callback) {
 
         hyperion_API.getServerInfo(function(err, result){
@@ -69,6 +73,10 @@ class HyperionNg extends utils.Adapter {
         });
     }
 
+    /**
+     * Is called when adapter shuts down - callback has to be called under any circumstances!
+     * @param {() => void} callback
+     */
     async readOutComponents(callback, instance = 0) {
 
         const self = this;
@@ -98,10 +106,11 @@ class HyperionNg extends utils.Adapter {
             }
 
             if (instance >= numberOfInstances) {
+                adapter.log.info("read out components finished");
             return callback();
             }
 
-            self.readOutComponents(function( err, result ){}, instance);
+            self.readOutComponents(callback, instance);
 
         }, instance);
     }
@@ -114,15 +123,11 @@ class HyperionNg extends utils.Adapter {
         hyperion_API = new Hyperion_API.Hyperion_API(this.config['address'], this.config['json_port'],this);
 
         this.readOutInstances( () => {
-            this.readOutComponents(function( err, result ){});
-        });
-        // hyperion_API.getServerInfo(function(err, result){
-        //     adapter.log.info('socket Connection: ' + hyperion_API.connected);
-        //     adapter.log.info('communication successfull');
-        //     adapter.log.info(JSON.stringify(result));
-        // }, 0);
-
-        this.subscribeStates('testVariable');
+            this.readOutComponents((err, result) => {
+                this.log.info("setup finished");
+                this.subscribeStates('*');
+            });
+        }); 
     }
 
     /**
@@ -169,6 +174,17 @@ class HyperionNg extends utils.Adapter {
         if (state) {
             // The state was changed
             this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+
+            if (!state.ack) {
+                var id_arr = id.split('.');
+                if (id_arr[3] === 'components') {
+                    hyperion_API.setComponentStatus(id_arr[4], state.val, id_arr[2], (err, result) => {
+                        this.readOutComponents((err, result) => {
+                            this.log.info("component is set");
+                        },parseInt(id_arr[2]));
+                    });
+                }
+            }
         } else {
             // The state was deleted
             this.log.info(`state ${id} deleted`);
