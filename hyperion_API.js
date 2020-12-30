@@ -157,6 +157,20 @@ class Hyperion_API
     }
 
     /**
+     * Get system information, an information about the instance is not nesessary
+     * the instance ID. The response of this communication will be trown away.
+     *
+     * @param {Function} callback	callback function, using (err, result)
+     */
+    async getSystemInfo(callback) {
+        adapterMain.log.debug('get System Information');
+
+        this.sendMessage({
+                    command : 'sysinfo'
+                }, callback);
+    }
+
+    /**
      * Get server information, if you use more than one LED-Hardware instance it is necessary to set at first
      * the instance ID. The response of this communication will be trown away.
      *

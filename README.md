@@ -14,32 +14,14 @@
 
 ## hyperion_ng adapter for ioBroker
 
-this is a short description
+With this adapter you can control your HyperionNG devices
+
+## Actual possible Features
+
+* control Components of all instances
 
 ## Developer manual
 This section is intended for the developer. It can be deleted later
-
-### Getting started
-
-You are almost done, only a few steps left:
-1. Create a new repository on GitHub with the name `ioBroker.hyperion_ng`
-1. Initialize the current folder as a new git repository:  
-    ```bash
-    git init
-    git add .
-    git commit -m "Initial commit"
-    ```
-1. Link your local repository with the one on GitHub:  
-    ```bash
-    git remote add origin https://github.com/felixganzer/ioBroker.hyperion_ng
-    ```
-
-1. Push all files to the GitHub repo:  
-    ```bash
-    git push origin master
-    ```
-
-1. Head over to [main.js](main.js) and start programming!
 
 ### Best Practices
 We've collected some [best practices](https://github.com/ioBroker/ioBroker.repositories#development-and-coding-best-practices) regarding ioBroker development and coding in general. If you're new to ioBroker or Node.js, you should
@@ -94,6 +76,9 @@ For later updates, the above procedure is not necessary. Just do the following:
 1. Execute `iobroker upload hyperion_ng` on the ioBroker host
 
 ## Changelog
+
+### 0.1.2 (2020.12.30)
+* (felixganzer) add read out sysinfos to check Version of Hyperion
 
 ### 0.1.1 (2020.12.30)
 * (felixganzer) add controling components of hyperion

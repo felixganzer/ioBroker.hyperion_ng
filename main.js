@@ -28,6 +28,7 @@ class HyperionNg extends utils.Adapter {
         });
 
         adapter = this; // set this Class as this adapter for using logging global;
+        this.hyperionVersion = '1.9.0';
 
         this.on('ready', this.onReady.bind(this));
         this.on('stateChange', this.onStateChange.bind(this));
@@ -37,7 +38,59 @@ class HyperionNg extends utils.Adapter {
     }
 
     /**
-     * Is called when adapter shuts down - callback has to be called under any circumstances!
+     * read out all system information from hyperion. set the version variable to check hyperion api Version
+     * @param {() => void} callback
+     */
+    async readOutSystemInformations(callback) {
+
+        hyperion_API.getSystemInfo((err, result) => {
+            adapter.log.debug(JSON.stringify(result));
+            if( err == null && result.command == 'sysinfo') {
+
+                //hyperion set Version
+                this.hyperionVersion = result.info.hyperion.version;
+                
+                var myobj = {type: 'instance independent parameter',common: {name: 'general'}, native:{id: 'general'}};
+                    adapter.setObject('general', myobj);
+
+                //hyperion Info
+                var my_hyperion = result.info.hyperion;
+                var myobj = {type: 'hyperion Info',common: {name: 'hyperion Info'}, native:{id: 'hyperion Info'}};
+                adapter.setObject('general.hyperion', myobj);
+                
+                for (var hyperion in my_hyperion){
+                    var my_arg_Name = hyperion;
+                    var my_arg_val = my_hyperion[hyperion];
+
+                    myobj = {type: 'state', common: {role: my_arg_Name, type: 'state', name: my_arg_Name}, native:{id: my_arg_Name}};
+                    adapter.setObject('general.hyperion.' + my_arg_Name, myobj);
+                    adapter.setState('general.hyperion.' + my_arg_Name, my_arg_val, true);
+                }
+                
+                //System Info
+                var my_system = result.info.system;
+                myobj = {type: 'System Info',common: {name: 'System Info'}, native:{id: 'System Info'}};
+                adapter.setObject('general.system', myobj);
+
+                for (var system in my_system){
+                    var my_arg_Name = system;
+                    var my_arg_val = my_system[system];
+
+                    myobj = {type: 'state', common: {role: my_arg_Name, type: 'state', name: my_arg_Name}, native:{id: my_arg_Name}};
+                    adapter.setObject('general.system.' + my_arg_Name, myobj);
+                    adapter.setState('general.system.' + my_arg_Name, my_arg_val, true);
+                }
+            }
+            else {
+                adapter.log.error('Error at read out SystemInformations');
+            }
+
+            return callback();
+        });
+    }
+
+    /**
+     * read out number of instances, creates note at objects and set variable for number of existing instances
      * @param {() => void} callback
      */
     async readOutInstances(callback) {
@@ -122,12 +175,20 @@ class HyperionNg extends utils.Adapter {
 
         hyperion_API = new Hyperion_API.Hyperion_API(this, this.config['address'], this.config['json_port'], this.config['prio']);
 
-        this.readOutInstances( () => {
-            this.readOutComponents((err, result) => {
-                this.log.info("setup finished");
-                this.subscribeStates('*');
-            });
-        }); 
+        this.readOutSystemInformations( () => {
+
+            if(this.hyperionVersion.substr(0,1) != "2") {
+                this.log.error("Your Version of hyperiion (" + this.hyperionVersion + ') is not supported!!');
+                return;
+            }
+
+            this.readOutInstances( () => {
+                this.readOutComponents((err, result) => {
+                    this.log.info("setup finished");
+                    this.subscribeStates('*');
+                });
+            }); 
+        });
     }
 
     /**
@@ -177,6 +238,8 @@ class HyperionNg extends utils.Adapter {
 
             if (!state.ack) {
                 var id_arr = id.split('.');
+
+                // #####################  set Components #####################################
                 if (id_arr[3] === 'components') {
                     hyperion_API.setComponentStatus(id_arr[4], state.val, id_arr[2], (err, result) => {
                         this.readOutComponents((err, result) => {
