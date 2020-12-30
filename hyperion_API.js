@@ -6,10 +6,11 @@ var callbackFns = [];
 
 class Hyperion_API
 {
-    constructor(host_IP, host_Port, adapter){
+    constructor(adapter, host_IP = '127.0.0.1', host_Port = 19444, priority = 50){
 
         this.host_IP    = host_IP;
         this.host_Port  = host_Port;
+        this.priority 	= priority;
         this.socket     = null;
         adapterMain     = adapter;
 
@@ -62,7 +63,7 @@ class Hyperion_API
 
         this.socket = new net.Socket();
 
-        await this.socket.connect(19444, '192.168.178.45', function() {
+        await this.socket.connect(this.host_Port, this.host_IP, function() {
             this.connected = true;
             adapterMain.log.info('socket is connected');
         }.bind(this));

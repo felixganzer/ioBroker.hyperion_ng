@@ -120,7 +120,7 @@ class HyperionNg extends utils.Adapter {
      */
     async onReady() {
 
-        hyperion_API = new Hyperion_API.Hyperion_API(this.config['address'], this.config['json_port'],this);
+        hyperion_API = new Hyperion_API.Hyperion_API(this, this.config['address'], this.config['json_port'], this.config['prio']);
 
         this.readOutInstances( () => {
             this.readOutComponents((err, result) => {
