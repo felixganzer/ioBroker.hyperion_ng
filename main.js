@@ -11,6 +11,7 @@ const Hyperion_API = require('./hyperion_API');
 
 var hyperion_API;
 var adapter = null;
+var numberOfInstances = 0;
 
 // Load your modules here, e.g.:
 // const fs = require("fs");
@@ -35,13 +36,15 @@ class HyperionNg extends utils.Adapter {
         this.on('unload', this.onUnload.bind(this));
     }
 
-    async readOutInstances() {
+    async readOutInstances(callback) {
 
         hyperion_API.getServerInfo(function(err, result){
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
 
                 var my_instances = result.info.instance;
+
+                numberOfInstances = 0;
                 for (var instance in my_instances){
                 
                     var my_instance_ID = instance;
@@ -53,16 +56,54 @@ class HyperionNg extends utils.Adapter {
 
                     myobj = {type: 'state', common: {role: 'running status', type: 'boolean', name: my_instance_Name}, native:{id: my_instance_ID + my_instance_Name}};
                     adapter.setObject(my_instance_ID + '.' + 'running', myobj);
-                    adapter.setState(my_instance_ID + '.' + 'running', my_instance_running);
-
+                    adapter.setState(my_instance_ID + '.' + 'running', my_instance_running, true);
+                    
+                    numberOfInstances++;
                 }
             }
             else {
                 adapter.log.error('Error at read out instances');
             }
 
+            return callback();
+        });
+    }
+
+    async readOutComponents(callback, instance = 0) {
+
+        const self = this;
+
+        hyperion_API.getServerInfo(function(err, result){
             adapter.log.debug(JSON.stringify(result));
-        }, 0);
+            if( err == null && result.command == 'serverinfo') {
+
+                var my_components = result.info.components;
+                for (var component in my_components){
+                
+                    var my_component_Name   = my_components[component].name;
+                    var my_component_status = my_components[component].enabled;
+
+                    var myobj = {type: 'components',common: {name: 'components'}, native:{id: 'components'}};
+                    adapter.setObject(instance + '.' + 'components', myobj);
+
+                    myobj = {type: 'state', common: {role: 'set component status', type: 'boolean', name: my_component_Name}, native:{id: instance + my_component_Name}};
+                    adapter.setObject(instance + '.' + 'components' + '.' + my_component_Name, myobj);
+                    adapter.setState(instance + '.' + 'components' + '.' + my_component_Name, my_component_status, true);
+                }
+
+                instance++;
+            }
+            else {
+                adapter.log.error('Error at read out components');
+            }
+
+            if (instance >= numberOfInstances) {
+            return callback();
+            }
+
+            self.readOutComponents(function( err, result ){}, instance);
+
+        }, instance);
     }
 
     /**
@@ -72,7 +113,9 @@ class HyperionNg extends utils.Adapter {
 
         hyperion_API = new Hyperion_API.Hyperion_API(this.config['address'], this.config['json_port'],this);
 
-        await this.readOutInstances();
+        this.readOutInstances( () => {
+            this.readOutComponents(function( err, result ){});
+        });
         // hyperion_API.getServerInfo(function(err, result){
         //     adapter.log.info('socket Connection: ' + hyperion_API.connected);
         //     adapter.log.info('communication successfull');
