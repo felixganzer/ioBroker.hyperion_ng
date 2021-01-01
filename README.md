@@ -16,7 +16,7 @@
 
 With this adapter you can control your HyperionNG devices
 
-## Actual possible Features
+## Actual working Features
 
 * control Components of all instances
 
@@ -77,11 +77,14 @@ For later updates, the above procedure is not necessary. Just do the following:
 
 ## Changelog
 
+### 0.1.3 (2021.01.01)
+* (felixganzer) add read out priorities to see actual running colors and effects
+
 ### 0.1.2 (2020.12.30)
 * (felixganzer) add read out sysinfos to check Version of Hyperion
 
 ### 0.1.1 (2020.12.30)
-* (felixganzer) add controling components of hyperion
+* (felixganzer) add controlling components of hyperion
 * (felixganzer) create first config to set IP, Port and Priority
 
 ### 0.1.0 (2020.12.29)

@@ -89,6 +89,88 @@ class HyperionNg extends utils.Adapter {
         });
     }
 
+    deleteObjects(objectPath, callback){
+        
+        const self = this;
+        // delete priorities of instance
+
+        adapter.getStates(objectPath, function (err, obj_array) {
+                    
+            for (var obj in obj_array)  { 
+            self.log.error("Test: " + JSON.stringify(obj));
+            self.delObjectAsync(obj);
+            }
+
+            setTimeout(function () {
+                return callback();
+            },100);
+        });
+    }
+    
+    
+    /**
+     * read out priorities (Quellenauswahl) of each instance and push information to iobroker
+     * @param {() => void} callback
+     */
+    async readOutPriorities(callback, instance = 0) {
+
+        const self = this;
+        
+        hyperion_API.getServerInfo(function(err, result){
+            adapter.log.debug(JSON.stringify(result));
+            if( err == null && result.command == 'serverinfo') {
+
+                self.deleteObjects('hyperion_ng.0.' + instance + '.priorities*',function(err, result2){ 
+                            
+                    // create priority folder at instance
+                    var my_priorities       = result.info.priorities;
+                    var my_priorities_ID    = -1;
+
+                    var myobj = {type: 'priorities',common: {name: 'priorities'}, native:{id: instance + 'priorities'}};
+                    adapter.setObject(instance + '.' + 'priorities', myobj);
+                    
+                    adapter.log.info('create priorities');
+
+                    // create priority at priority folder
+                    for (var priorities in my_priorities){
+                
+                        my_priorities_ID++;
+                        var my_priorities_Name =  my_priorities_ID + '-' + my_priorities[priorities].componentId;
+
+                        myobj = myobj = {type: my_priorities_Name,common: {name: my_priorities_Name}, native:{id: instance + 'priorities'+ my_priorities_ID + my_priorities_Name}};
+                        adapter.setObject(instance + '.' + 'priorities' + '.' + my_priorities_Name, myobj);
+
+                        var object_array = my_priorities[priorities];
+                        var object_path = instance + '.' + 'priorities' + '.' + my_priorities_Name;
+
+                        // fill priority with parameter
+                        for (var entry in object_array){
+                            var entry_Name = entry;
+                            var entry_val = object_array[entry];
+
+                            myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
+                            adapter.setObject(object_path + '.' + entry_Name, myobj);
+                            adapter.setState(object_path + '.' + entry_Name, entry_val, true);
+                        }
+                    } 
+
+                    instance++;
+
+                    if (instance >= numberOfInstances) {
+                        adapter.log.info("read out priorities finished");
+                    return callback();
+                    }
+        
+                    self.readOutPriorities(callback, instance);
+                },);   
+            }
+            else {
+                adapter.log.error('Error at read out priorities');
+            }
+
+        }, instance);
+    }
+
     /**
      * read out number of instances, creates note at objects and set variable for number of existing instances
      * @param {() => void} callback
@@ -184,8 +266,10 @@ class HyperionNg extends utils.Adapter {
 
             this.readOutInstances( () => {
                 this.readOutComponents((err, result) => {
-                    this.log.info("setup finished");
-                    this.subscribeStates('*');
+                    this.readOutPriorities((err, result) => {
+                        this.log.info("setup finished");
+                        this.subscribeStates('*');
+                    });
                 });
             }); 
         });
