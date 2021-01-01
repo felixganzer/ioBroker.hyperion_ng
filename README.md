@@ -19,6 +19,7 @@ With this adapter you can control your HyperionNG devices
 ## Actual working Features
 
 * control Components of all instances
+* clear All and clear Visible of instance. To use it, you have to set under "general.control" one instance and set clearAll or clearVisible to true. After clearing the states will be set to false and the priorities will be updated
 
 ## Developer manual
 This section is intended for the developer. It can be deleted later
@@ -76,6 +77,9 @@ For later updates, the above procedure is not necessary. Just do the following:
 1. Execute `iobroker upload hyperion_ng` on the ioBroker host
 
 ## Changelog
+
+### 0.1.4 (2021.01.01)
+* (felixganzer) add control clear of colors and effects
 
 ### 0.1.3 (2021.01.01)
 * (felixganzer) add read out priorities to see actual running colors and effects

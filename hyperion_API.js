@@ -201,6 +201,39 @@ class Hyperion_API
             },50) ;
         });
     }
+
+    /**
+     * Get server information, if you use more than one LED-Hardware instance it is necessary to set at first
+     * the instance ID. The response of this communication will be trown away.
+     *
+     * @param {number}      priority    
+     * @param {number}      instance    hyperion instance number to get informations for the correct one
+     * @param {Function}    callback	callback function, using (err, result)
+     */
+    async clearPriority(priority, instance, callback) {
+        
+        if (priority == -1 ){
+            adapterMain.log.info('clear all priorities of instance ' + instance);
+        }else {
+            adapterMain.log.info('clear priority with the number ' + priority + ' of instance ' + instance);
+        }
+
+        const self = this;
+
+        self.sendMessage({
+            command     : "instance",
+            subcommand  : "switchTo",
+            instance    : instance
+        },function(){
+            self.databuffer = '';
+            setTimeout(function () {
+                self.sendMessage({
+                    command         : 'clear',
+                    priority       : priority
+                }, callback);
+            },50) ;
+        });
+    }
 }
 
 module.exports.Hyperion_API = Hyperion_API;

@@ -89,6 +89,12 @@ class HyperionNg extends utils.Adapter {
         });
     }
 
+    /**
+     * support function for cleaning iobroker objects
+     * @param {String}      objectPath search string for iobroker object ID
+     * @param {() => void}  callback
+     * 
+     */
     deleteObjects(objectPath, callback){
         
         const self = this;
@@ -97,7 +103,7 @@ class HyperionNg extends utils.Adapter {
         adapter.getStates(objectPath, function (err, obj_array) {
                     
             for (var obj in obj_array)  { 
-            self.log.error("Test: " + JSON.stringify(obj));
+            //self.log.error("Test: " + JSON.stringify(obj));
             self.delObjectAsync(obj);
             }
 
@@ -110,9 +116,10 @@ class HyperionNg extends utils.Adapter {
     
     /**
      * read out priorities (Quellenauswahl) of each instance and push information to iobroker
-     * @param {() => void} callback
+     * @param {() => void}  callback
+     * @param {Integer}     instance integer of instance, which will be used. If not set, it will be 0 as default
      */
-    async readOutPriorities(callback, instance = 0) {
+    readOutPriorities(callback, instance = 0) {
 
         const self = this;
         
@@ -209,8 +216,9 @@ class HyperionNg extends utils.Adapter {
     }
 
     /**
-     * Is called when adapter shuts down - callback has to be called under any circumstances!
+     * read out compontent states of the instances
      * @param {() => void} callback
+     * @param {Integer}     instance integer of instance, which will be used. If not set, it will be 0 as default
      */
     async readOutComponents(callback, instance = 0) {
 
@@ -226,10 +234,19 @@ class HyperionNg extends utils.Adapter {
                     var my_component_Name   = my_components[component].name;
                     var my_component_status = my_components[component].enabled;
 
-                    var myobj = {type: 'components',common: {name: 'components'}, native:{id: 'components'}};
+                    var myobj ={
+                        type: 'folder',
+                        common: {
+                            name: 'components',
+                            role: 'component paramter',
+                        },
+                        native: {id: 'components'},
+                    }
+
                     adapter.setObject(instance + '.' + 'components', myobj);
 
                     myobj = {type: 'state', common: {role: 'set component status', type: 'boolean', name: my_component_Name}, native:{id: instance + my_component_Name}};
+
                     adapter.setObject(instance + '.' + 'components' + '.' + my_component_Name, myobj);
                     adapter.setState(instance + '.' + 'components' + '.' + my_component_Name, my_component_status, true);
                 }
@@ -251,16 +268,69 @@ class HyperionNg extends utils.Adapter {
     }
 
     /**
+     * create Iobroker Objects to set different Parameter to Hyperion
+     */
+    async createControlParameter() {
+
+        this.log.info("create Control Parameter");
+
+        // Object to set the instance for the control area
+        await this.setObjectNotExistsAsync('general.control.instance', {
+            type: 'state',
+            common: {
+                name: 'control instance',
+                type: 'number',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.instance', { val: 0, ack: true });
+
+        // Object to clear all effects and colors
+        await this.setObjectNotExistsAsync('general.control.clearAll', {
+            type: 'state',
+            common: {
+                name: 'clear all priorities',
+                type: 'boolean',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.clearAll', { val: false, ack: true });
+
+        // Object to clear visible effects and colors
+        await this.setObjectNotExistsAsync('general.control.clearVisible', {
+            type: 'state',
+            common: {
+                name: 'clear visible priority',
+                type: 'boolean',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.clearVisible', { val: false, ack: true });
+
+    }
+
+    /**
      * Is called when databases are connected and adapter received configuration.
      */
     async onReady() {
 
         hyperion_API = new Hyperion_API.Hyperion_API(this, this.config['address'], this.config['json_port'], this.config['prio']);
 
+        await this.createControlParameter();
+
         this.readOutSystemInformations( () => {
 
             if(this.hyperionVersion.substr(0,1) != "2") {
-                this.log.error("Your Version of hyperiion (" + this.hyperionVersion + ') is not supported!!');
+                this.log.error("Your Version of hyperion (" + this.hyperionVersion + ') is not supported!!');
                 return;
             }
 
@@ -293,23 +363,6 @@ class HyperionNg extends utils.Adapter {
         }
     }
 
-    // If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-    // You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-    // /**
-    //  * Is called if a subscribed object changes
-    //  * @param {string} id
-    //  * @param {ioBroker.Object | null | undefined} obj
-    //  */
-    // onObjectChange(id, obj) {
-    //     if (obj) {
-    //         // The object was changed
-    //         this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-    //     } else {
-    //         // The object was deleted
-    //         this.log.info(`object ${id} deleted`);
-    //     }
-    // }
-
     /**
      * Is called if a subscribed state changes
      * @param {string} id
@@ -318,12 +371,13 @@ class HyperionNg extends utils.Adapter {
     onStateChange(id, state) {
         if (state) {
             // The state was changed
-            this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+            this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
 
             if (!state.ack) {
                 var id_arr = id.split('.');
 
                 // #####################  set Components #####################################
+                
                 if (id_arr[3] === 'components') {
                     hyperion_API.setComponentStatus(id_arr[4], state.val, id_arr[2], (err, result) => {
                         this.readOutComponents((err, result) => {
@@ -331,10 +385,51 @@ class HyperionNg extends utils.Adapter {
                         },parseInt(id_arr[2]));
                     });
                 }
+
+                // #####################  clear all priorities ##############################
+
+                if (id_arr[3] === 'control' && id_arr[4] === 'clearAll') {
+                    this.getState('hyperion_ng.0.general.control.instance',(err, instance) => {
+                        hyperion_API.clearPriority(-1, instance.val, (err, result) => {
+                            this.setState(id,{ val: false, ack: true });
+                            this.readOutPriorities((err, result) => {});
+                    
+                        });
+                    });
+                }
+
+                // #####################  clear visible priorities ###########################
+
+                if (id_arr[3] === 'control' && id_arr[4] === 'clearVisible') {
+                    this.getState('hyperion_ng.0.general.control.instance', (err, instance) => {
+                        this.getStates('hyperion_ng.0.' + instance.val + '.priorities.0*', (err, obj_array) => {
+                            for (var obj in obj_array)  { 
+                                var obj_string = JSON.stringify(obj);
+                                if (obj_string.includes("priority")) {
+                                    hyperion_API.clearPriority(obj_array[obj].val, instance.val, (err, result) => {
+                                        this.setState(id,{ val: false, ack: true });
+                                        this.readOutPriorities((err, result) => {});
+                                    });
+                                }
+                            }
+                        });
+                    });
+                }
+
+                // #####################  check instance of existing instance ###############
+
+                if (id_arr[3] === 'control' && id_arr[4] === 'instance') {
+                    if(state.val < numberOfInstances) {
+                        this.setState(id,{ val: state.val, ack: true });
+                    } else {
+                        this.setState(id,{ val: 0, ack: true });
+                        adapter.log.error('Die gesetzte Instance existiert nicht und wird auf null zuückgesetzt.')
+                    }
+                }
             }
         } else {
             // The state was deleted
-            this.log.info(`state ${id} deleted`);
+            this.log.debug(`state ${id} deleted`);
         }
     }
 
