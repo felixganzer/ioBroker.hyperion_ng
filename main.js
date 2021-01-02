@@ -154,7 +154,7 @@ class HyperionNg extends utils.Adapter {
         adapter.getStates(objectPath, function (err, obj_array) {
                     
             for (var obj in obj_array)  { 
-            //self.log.error("Test: " + JSON.stringify(obj));
+            self.log.debug("Delete: " + JSON.stringify(obj));
             self.delObjectAsync(obj);
             }
 
@@ -302,6 +302,20 @@ class HyperionNg extends utils.Adapter {
                     adapter.setState(instance + '.' + 'components' + '.' + my_component_Name, my_component_status, true);
                 }
 
+                // read out video mode
+                var my_videoMode = result.info.videomode;
+                myobj = {type: 'state', common: {role: 'video mode', type: 'string', name: 'video mode'}, native:{id: instance + 'video mode'}};
+
+                adapter.setObject(instance + '.' + 'video mode', myobj);
+                adapter.setState(instance + '.' + 'video mode', my_videoMode, true);
+
+                // read out LED Mapping
+                var my_imageToLedMappingType = result.info.imageToLedMappingType;
+                myobj = {type: 'state', common: {role: 'imageToLedMappingType', type: 'string', name: 'imageToLedMappingType'}, native:{id: instance + 'imageToLedMappingType'}};
+
+                adapter.setObject(instance + '.' + 'imageToLedMappingType', myobj);
+                adapter.setState(instance + '.' + 'imageToLedMappingType', my_imageToLedMappingType, true);
+
                 instance++;
             }
             else {
@@ -314,6 +328,61 @@ class HyperionNg extends utils.Adapter {
             }
 
             self.readOutComponents(callback, instance);
+
+        }, instance);
+    }
+
+     /**
+     * read out compontent states of the instances
+     * @param {() => void} callback
+     * @param {Integer}     instance integer of instance, which will be used. If not set, it will be 0 as default
+     */
+    async readOutAdjustments(callback, instance = 0) {
+
+        const self = this;
+
+        hyperion_API.getServerInfo(function(err, result){
+            adapter.log.debug(JSON.stringify(result));
+            if( err == null && result.command == 'serverinfo') {
+                
+                var myobj ={
+                    type: 'folder',
+                    common: {
+                        name: 'adjustments',
+                        role: 'adjustment paramter',
+                    },
+                    native: {id: 'adjustments'},
+                }
+
+                adapter.setObject(instance + '.' + 'adjustments', myobj);
+
+                var object_array = result.info.adjustment[0];
+                var object_path = instance + '.' + 'adjustments';
+
+                adapter.log.debug(JSON.stringify(result.info.adjustment));
+
+                // fill priority with parameter
+                for (var entry in object_array){
+                    var entry_Name = entry;
+                    var entry_val = object_array[entry];
+
+                    myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
+                    adapter.setObject(object_path + '.' + entry_Name, myobj);
+                    adapter.setState(object_path + '.' + entry_Name, entry_val, true);
+                }
+
+                instance++;
+            }
+            else {
+                adapter.log.error('Error at read out components');
+            }
+
+            if (instance >= numberOfInstances) {
+                adapter.log.info("read out Adjustments finished");
+            return callback();
+            }
+
+            self.readOutAdjustments(callback, instance);
 
         }, instance);
     }
@@ -401,10 +470,12 @@ class HyperionNg extends utils.Adapter {
 
             this.readOutInstances( () => {
                 this.readOutComponents((err, result) => {
-                    this.readOutPriorities((err, result) => {
-                        this.readOutEffects((err, result) => {
-                            this.log.info("setup finished");
-                            this.subscribeStates('*');
+                    this.readOutAdjustments((err, result) => {
+                        this.readOutPriorities((err, result) => {
+                            this.readOutEffects((err, result) => {
+                                this.log.info("setup finished");
+                                this.subscribeStates('*');
+                            });
                         });
                     });
                 });
