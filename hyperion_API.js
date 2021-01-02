@@ -234,6 +234,36 @@ class Hyperion_API
             },50) ;
         });
     }
+
+    /**
+     * Set Effect over effect Name. It will be used the priority of the adapter
+     *  
+     * @param {number}      instance    hyperion instance number to get informations for the correct one
+     * @param {String}      effectName  name of effect which will be set
+     * @param {Function}    callback	callback function, using (err, result)
+     */
+    async setEffect(instance, effectName, callback) {
+        
+        const self = this;
+
+        self.sendMessage({
+            command     : "instance",
+            subcommand  : "switchTo",
+            instance    : instance
+        },function(){
+            self.databuffer = '';
+            setTimeout(function () {
+                self.sendMessage({
+                    command         : 'effect',
+                    effect          : {
+                        name        : effectName,
+                    },
+                    priority        : self.priority,
+                    origin          : 'ioBroker'
+                }, callback);
+            },50) ;
+        });
+    }
 }
 
 module.exports.Hyperion_API = Hyperion_API;

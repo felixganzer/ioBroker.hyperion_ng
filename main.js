@@ -90,6 +90,57 @@ class HyperionNg extends utils.Adapter {
     }
 
     /**
+     * read out all possible Effects from hyperion and save it under general effects
+     * @param {() => void} callback
+     */
+    async readOutEffects(callback) {
+
+        hyperion_API.getServerInfo((err, result) => {
+            adapter.log.debug(JSON.stringify(result));
+            if( err == null && result.command == 'serverinfo') {
+
+                // create priority folder at instance
+                var my_effects       = result.info.effects;
+                var my_effects_ID    = -1;
+
+                var myobj = {type: 'folder',common: {name: 'effects'}, native:{id: 'effects'}};
+                adapter.setObject('general.effects', myobj);
+                
+                adapter.log.info('create effects');
+
+                // create priority at priority folder
+                for (var effects in my_effects){
+            
+                    my_effects_ID++;
+                    var my_effects_ID_string = ("00000" + my_effects_ID).slice(-2);
+                    var my_effects_Name =  my_effects_ID_string + '-' + my_effects[effects].name;
+
+                    myobj = {type: 'folder', common: {name: my_effects_Name}, native:{id: 'effects'+ my_effects_ID + my_effects_Name}};
+                    adapter.setObject('general.effects' + '.' + my_effects_Name, myobj);
+
+                    var object_array = my_effects[effects].args;
+                    var object_path = 'general.effects' + '.' + my_effects_Name;
+
+                    // fill priority with parameter
+                    for (var entry in object_array){
+                        var entry_Name = entry;
+                        var entry_val = object_array[entry];
+
+                        myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
+                        adapter.setObject(object_path + '.' + entry_Name, myobj);
+                        adapter.setState(object_path + '.' + entry_Name, entry_val, true);
+                    }
+                } 
+            }
+            else {
+                adapter.log.error('Error at read out SystemInformations');
+            }
+
+            return callback();
+        });
+    }
+
+    /**
      * support function for cleaning iobroker objects
      * @param {String}      objectPath search string for iobroker object ID
      * @param {() => void}  callback
@@ -144,7 +195,7 @@ class HyperionNg extends utils.Adapter {
                         my_priorities_ID++;
                         var my_priorities_Name =  my_priorities_ID + '-' + my_priorities[priorities].componentId;
 
-                        myobj = myobj = {type: my_priorities_Name,common: {name: my_priorities_Name}, native:{id: instance + 'priorities'+ my_priorities_ID + my_priorities_Name}};
+                        myobj = {type: my_priorities_Name,common: {name: my_priorities_Name}, native:{id: instance + 'priorities'+ my_priorities_ID + my_priorities_Name}};
                         adapter.setObject(instance + '.' + 'priorities' + '.' + my_priorities_Name, myobj);
 
                         var object_array = my_priorities[priorities];
@@ -316,6 +367,20 @@ class HyperionNg extends utils.Adapter {
         });
         await this.setStateAsync('general.control.clearVisible', { val: false, ack: true });
 
+        // Object to set effect
+        await this.setObjectNotExistsAsync('general.control.setEffect', {
+            type: 'state',
+            common: {
+                name: 'set Effect over String',
+                type: 'string',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.setEffect', { val: '', ack: true });
+
     }
 
     /**
@@ -337,8 +402,10 @@ class HyperionNg extends utils.Adapter {
             this.readOutInstances( () => {
                 this.readOutComponents((err, result) => {
                     this.readOutPriorities((err, result) => {
-                        this.log.info("setup finished");
-                        this.subscribeStates('*');
+                        this.readOutEffects((err, result) => {
+                            this.log.info("setup finished");
+                            this.subscribeStates('*');
+                        });
                     });
                 });
             }); 
@@ -412,6 +479,19 @@ class HyperionNg extends utils.Adapter {
                                     });
                                 }
                             }
+                        });
+                    });
+                }
+
+                // #####################  set Effect ####################################
+
+                if (id_arr[3] === 'control' && id_arr[4] === 'setEffect') {
+                    this.getState('hyperion_ng.0.general.control.instance',(err, instance) => {
+                        hyperion_API.setEffect(instance.val, state.val, (err, result) => {
+                            setTimeout(() =>{
+                            this.setState(id,{ val: '', ack: true });
+                            this.readOutPriorities((err, result) => {});
+                            },200);
                         });
                     });
                 }
