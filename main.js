@@ -374,7 +374,7 @@ class HyperionNg extends utils.Adapter {
                 instance++;
             }
             else {
-                adapter.log.error('Error at read out components');
+                adapter.log.error('Error at read out Adjustments');
             }
 
             if (instance >= numberOfInstances) {
@@ -450,6 +450,20 @@ class HyperionNg extends utils.Adapter {
         });
         await this.setStateAsync('general.control.setEffect', { val: '', ack: true });
 
+        // Object to set color
+        await this.setObjectNotExistsAsync('general.control.setColorRGB', {
+            type: 'state',
+            common: {
+                name: 'set Color over RGB',
+                type: 'string',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.setColorRGB', { val: '255,255,255', ack: true });
+
     }
 
     /**
@@ -524,6 +538,16 @@ class HyperionNg extends utils.Adapter {
                     });
                 }
 
+                // #####################  set Adjustment #####################################
+                
+                if (id_arr[3] === 'adjustments') {
+                    hyperion_API.setAdjustment(id_arr[4], state.val, id_arr[2], (err, result) => {
+                        this.readOutAdjustments((err, result) => {
+                            this.log.info("Adjustment is set");
+                        },parseInt(id_arr[2]));
+                    });
+                }
+
                 // #####################  clear all priorities ##############################
 
                 if (id_arr[3] === 'control' && id_arr[4] === 'clearAll') {
@@ -567,6 +591,19 @@ class HyperionNg extends utils.Adapter {
                     });
                 }
 
+                // #####################  set Color RGB ####################################
+
+                if (id_arr[3] === 'control' && id_arr[4] === 'setColorRGB') {
+                    this.getState('hyperion_ng.0.general.control.instance',(err, instance) => {
+                        hyperion_API.setColorRGB(instance.val, state.val, (err, result) => {
+                            setTimeout(() =>{
+                            this.setState(id,{ val: '255,255,255', ack: true });
+                            this.readOutPriorities((err, result) => {});
+                            },200);
+                        });
+                    });
+                }
+
                 // #####################  check instance of existing instance ###############
 
                 if (id_arr[3] === 'control' && id_arr[4] === 'instance') {
@@ -576,6 +613,16 @@ class HyperionNg extends utils.Adapter {
                         this.setState(id,{ val: 0, ack: true });
                         adapter.log.error('Die gesetzte Instance existiert nicht und wird auf null zuückgesetzt.')
                     }
+                }
+
+                // #####################  start and stop intance ###############
+
+                if (id_arr[3] === 'running') {
+                    hyperion_API.startStopInstance(state.val, id_arr[2], (err, result) => {
+                        this.readOutInstances((err, result) => {
+                            this.log.info("Instance running status is changed");
+                        });
+                    });
                 }
             }
         } else {
