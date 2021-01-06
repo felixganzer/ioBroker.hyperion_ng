@@ -551,7 +551,7 @@ class HyperionNg extends utils.Adapter {
                 // #####################  clear all priorities ##############################
 
                 if (id_arr[3] === 'control' && id_arr[4] === 'clearAll') {
-                    this.getState('hyperion_ng.0.general.control.instance',(err, instance) => {
+                    this.getState(this.namespace + '.general.control.instance',(err, instance) => {
                         hyperion_API.clearPriority(-1, instance.val, (err, result) => {
                             this.setState(id,{ val: false, ack: true });
                             this.readOutPriorities((err, result) => {});
@@ -563,8 +563,8 @@ class HyperionNg extends utils.Adapter {
                 // #####################  clear visible priorities ###########################
 
                 if (id_arr[3] === 'control' && id_arr[4] === 'clearVisible') {
-                    this.getState('hyperion_ng.0.general.control.instance', (err, instance) => {
-                        this.getStates('hyperion_ng.0.' + instance.val + '.priorities.0*', (err, obj_array) => {
+                    this.getState(this.namespace + '.general.control.instance', (err, instance) => {
+                        this.getStates(this.namespace + instance.val + '.priorities.0*', (err, obj_array) => {
                             for (var obj in obj_array)  { 
                                 var obj_string = JSON.stringify(obj);
                                 if (obj_string.includes("priority")) {
@@ -581,7 +581,7 @@ class HyperionNg extends utils.Adapter {
                 // #####################  set Effect ####################################
 
                 if (id_arr[3] === 'control' && id_arr[4] === 'setEffect') {
-                    this.getState('hyperion_ng.0.general.control.instance',(err, instance) => {
+                    this.getState(this.namespace + '.general.control.instance',(err, instance) => {
                         hyperion_API.setEffect(instance.val, state.val, (err, result) => {
                             setTimeout(() =>{
                             this.setState(id,{ val: '', ack: true });
@@ -594,7 +594,7 @@ class HyperionNg extends utils.Adapter {
                 // #####################  set Color RGB ####################################
 
                 if (id_arr[3] === 'control' && id_arr[4] === 'setColorRGB') {
-                    this.getState('hyperion_ng.0.general.control.instance',(err, instance) => {
+                    this.getState(this.namespace + '.general.control.instance',(err, instance) => {
                         hyperion_API.setColorRGB(instance.val, state.val, (err, result) => {
                             setTimeout(() =>{
                             this.setState(id,{ val: '255,255,255', ack: true });

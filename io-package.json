@@ -1,8 +1,20 @@
 {
     "common": {
         "name": "hyperion_ng",
-        "version": "0.1.6",
+        "version": "0.1.7",
         "news": {
+            "0.1.7": {
+                "en": "first feature complete version",
+                "de": "erste Funktion vollständige Version",
+                "ru": "первая функция полная версия",
+                "pt": "versão completa do primeiro recurso",
+                "nl": "eerste feature complete versie",
+                "fr": "première fonctionnalité version complète",
+                "it": "prima versione completa di funzionalità",
+                "es": "primera versión completa de funciones",
+                "pl": "pierwsza pełna wersja funkcji",
+                "zh-cn": "第一功能完整版"
+            },
             "0.0.1": {
                 "en": "initial release",
                 "de": "Erstveröffentlichung",
@@ -30,16 +42,16 @@
             "zh-cn": "超离子"
         },
         "desc": {
-            "en": "this is a short description",
-            "de": "Dies ist eine kurze Beschreibung",
-            "ru": "это краткое описание",
-            "pt": "esta é uma breve descrição",
-            "nl": "dit is een korte omschrijving",
-            "fr": "ceci est une brève description",
-            "it": "questa è una breve descrizione",
-            "es": "esta es una breve descripción",
-            "pl": "to jest krótki opis",
-            "zh-cn": "这是一个简短的描述"
+            "en": "this adapter can control HyperionNG",
+            "de": "Dieser Adapter kann HyperionNG steuern",
+            "ru": "этот адаптер может управлять HyperionNG",
+            "pt": "este adaptador pode controlar HyperionNG",
+            "nl": "deze adapter kan HyperionNG aansturen",
+            "fr": "cet adaptateur peut contrôler HyperionNG",
+            "it": "questo adattatore può controllare HyperionNG",
+            "es": "este adaptador puede controlar HyperionNG",
+            "pl": "ten adapter może kontrolować HyperionNG",
+            "zh-cn": "该适配器可以控制HyperionNG"
         },
         "authors": [
             "felixganzer <felixganzer@web.de>"

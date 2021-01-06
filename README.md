@@ -16,14 +16,39 @@
 
 With this adapter you can control your HyperionNG devices
 
-## Actual working Features
+## Manual
 
-* read out all possible informations over Server Informations
-* control Components of all instances
-* control Adjustments of all instances
-* clear All and clear Visible of instance. To use it, you have to set under "general.control" one instance and set clearAll or clearVisible to true. After clearing the states will be set to false and the priorities will be updated
-* add Effect to instance: To use it, you have to set under "general.control" one instance and enter the correct String under setEffect. Actual is no error catching included
-* start and stop instance: change the "running" state of the instance
+### General
+
+The adapter will create for every hyperion hardware instance a folder with the instance number. Inside of these folder the actual adjustments, all components and all active priorities.
+
+Additionally a general folder will be created which includes control, to send commands to hyperion, all possible effects and system informations about hyperion.
+
+### control components and deactivate hyperion instance
+
+You can control the components inside of the instance.components folder to set the boolean. After setting the parameter, all components parameter of the controlled instance and every following instances will be updated
+
+Additionally you can set the instance.running parameter to activate and deactivate the whole instance
+
+### control adjustments
+
+you can control the adjustments inside of the instance.components folder to set the parameter. After setting the parameter, all adjustments of the controlled instance and every following instances will be updated
+
+### set effects
+
+To set an effect you have to set an instance number under general.control.instance. After that you can enter the correct name of an exisitng effect under general.control.setEffect. After setting the effect the priorities of the used instance and every following instances will be updated
+
+### set colors
+
+To set a color you have to set an instance number under general.control.instance. After that you can enter a RGB value under general.control.setColorRGB. After setting the color the priorities of the used instance and every following instances will be updated
+
+### clear effects and colors
+
+To clear a priority you have to set an instance number under general.control.instance. After that you can set the parameter general.control.clearAll or general.control.clearVisible to true to clear priorities. After success the boolean will be set to false.
+
+
+
+
 
 ## Developer manual
 This section is intended for the developer. It can be deleted later
@@ -81,6 +106,10 @@ For later updates, the above procedure is not necessary. Just do the following:
 1. Execute `iobroker upload hyperion_ng` on the ioBroker host
 
 ## Changelog
+
+### 0.1.7 (2021.01.06)
+* (felixganzer) bugfix: only works with iobroker adapter instance 0
+* (felixganzer) updating the manual
 
 ### 0.1.6 (2021.01.03)
 * (felixganzer) add setColorRGB under general.control
