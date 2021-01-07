@@ -38,9 +38,13 @@ you can control the adjustments inside of the instance.components folder to set 
 
 To set an effect you have to set an instance number under general.control.instance. After that you can enter the correct name of an exisitng effect under general.control.setEffect. After setting the effect the priorities of the used instance and every following instances will be updated
 
+Over general.control.durationEffectColor you can set a duration in seconds. You have to set these value before you set the effect. The standard value 0. This will set the effect time to infinity.
+
 ### set colors
 
 To set a color you have to set an instance number under general.control.instance. After that you can enter a RGB value under general.control.setColorRGB. After setting the color the priorities of the used instance and every following instances will be updated
+
+Over general.control.durationEffectColor you can set a duration in seconds. You have to set these value before you set the color. The standard value 0. This will set the effect time to infinity.
 
 ### clear effects and colors
 
@@ -106,6 +110,10 @@ For later updates, the above procedure is not necessary. Just do the following:
 1. Execute `iobroker upload hyperion_ng` on the ioBroker host
 
 ## Changelog
+
+### 0.1.8 (2021.01.07)
+* (felixganzer) add set duration of effect and color to set
+* (felixganzer) bugfix: clearVisible did not work
 
 ### 0.1.7 (2021.01.06)
 * (felixganzer) bugfix: only works with iobroker adapter instance 0

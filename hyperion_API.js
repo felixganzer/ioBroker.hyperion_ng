@@ -315,9 +315,9 @@ class Hyperion_API
     /**
      * Set Effect over effect Name. It will be used the priority of the adapter
      *  
-     * @param {number}      instance    hyperion instance number to get informations for the correct one
-     * @param {String}      effectName  name of effect which will be set
-     * @param {Function}    callback	callback function, using (err, result)
+     * @param {number}      instance        hyperion instance number to get informations for the correct one
+     * @param {String}      effectName      name of effect which will be set
+     * @param {Function}    callback	    callback function, using (err, result)
      */
     async setEffect(instance, effectName, callback) {
         
@@ -335,6 +335,38 @@ class Hyperion_API
                     effect          : {
                         name        : effectName,
                     },
+                    priority        : self.priority,
+                    origin          : 'ioBroker'
+                }, callback);
+            },50) ;
+        });
+    }
+
+    /**
+     * Set Effect over effect Name. It will be used the priority of the adapter
+     *  
+     * @param {number}      instance        hyperion instance number to get informations for the correct one
+     * @param {String}      effectName      name of effect which will be set
+     * @param {number}      effectDuration  time of effect duration in ms
+     * @param {Function}    callback	    callback function, using (err, result)
+     */
+    async setEffectDuration(instance, effectName, effectDuration, callback) {
+        
+        const self = this;
+
+        self.sendMessage({
+            command     : "instance",
+            subcommand  : "switchTo",
+            instance    : instance
+        },function(){
+            self.databuffer = '';
+            setTimeout(function () {
+                self.sendMessage({
+                    command         : 'effect',
+                    effect          : {
+                        name        : effectName,
+                    },
+                    duration        : effectDuration,
                     priority        : self.priority,
                     origin          : 'ioBroker'
                 }, callback);
@@ -369,6 +401,42 @@ class Hyperion_API
                 self.sendMessage({
                     command         : 'color',
                     color           : colorArray,
+                    priority        : self.priority,
+                    origin          : 'ioBroker'
+                }, callback);
+            },50) ;
+        });
+    }
+
+    /**
+     * Set Color over RGB seperated with comma. It will be used the priority of the adapter
+     *  
+     * @param {number}      instance        hyperion instance number to get informations for the correct one
+     * @param {String}      colorRGB        RGB values of Color
+     * @param {number}      colorDuration   time of effect duration in ms
+     * @param {Function}    callback	    callback function, using (err, result)
+     */
+    async setColorRGBDuration(instance, colorRGB, colorDuration, callback) {
+        
+        const self = this;
+
+        var colorArray = [255,255,255];
+        var colorArrayString = colorRGB.split(',');
+        colorArray[0] = parseInt(colorArrayString[0]);
+        colorArray[1] = parseInt(colorArrayString[1]);
+        colorArray[2] = parseInt(colorArrayString[2]);
+
+        self.sendMessage({
+            command     : "instance",
+            subcommand  : "switchTo",
+            instance    : instance
+        },function(){
+            self.databuffer = '';
+            setTimeout(function () {
+                self.sendMessage({
+                    command         : 'color',
+                    color           : colorArray,
+                    duration        : colorDuration,
                     priority        : self.priority,
                     origin          : 'ioBroker'
                 }, callback);

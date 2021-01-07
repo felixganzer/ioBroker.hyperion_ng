@@ -450,6 +450,20 @@ class HyperionNg extends utils.Adapter {
         });
         await this.setStateAsync('general.control.setEffect', { val: '', ack: true });
 
+        // Object to set effect or color duration
+        await this.setObjectNotExistsAsync('general.control.durationEffectColor', {
+            type: 'state',
+            common: {
+                name: 'set time of Effect or Color in seconds',
+                type: 'number',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.durationEffectColor', { val: 0, ack: true });
+
         // Object to set color
         await this.setObjectNotExistsAsync('general.control.setColorRGB', {
             type: 'state',
@@ -564,7 +578,7 @@ class HyperionNg extends utils.Adapter {
 
                 if (id_arr[3] === 'control' && id_arr[4] === 'clearVisible') {
                     this.getState(this.namespace + '.general.control.instance', (err, instance) => {
-                        this.getStates(this.namespace + instance.val + '.priorities.0*', (err, obj_array) => {
+                        this.getStates(this.namespace + '.' + instance.val + '.priorities.0*', (err, obj_array) => {
                             for (var obj in obj_array)  { 
                                 var obj_string = JSON.stringify(obj);
                                 if (obj_string.includes("priority")) {
@@ -582,11 +596,24 @@ class HyperionNg extends utils.Adapter {
 
                 if (id_arr[3] === 'control' && id_arr[4] === 'setEffect') {
                     this.getState(this.namespace + '.general.control.instance',(err, instance) => {
-                        hyperion_API.setEffect(instance.val, state.val, (err, result) => {
-                            setTimeout(() =>{
-                            this.setState(id,{ val: '', ack: true });
-                            this.readOutPriorities((err, result) => {});
-                            },200);
+                        this.getState(this.namespace + '.general.control.durationEffectColor',(err, effectDuration) => {
+                            if (effectDuration == 0) {
+                                hyperion_API.setEffect(instance.val, state.val, (err, result) => {
+                                    setTimeout(() =>{
+                                    this.setState(id,{ val: '', ack: true });
+                                    this.readOutPriorities((err, result) => {});
+                                    },200);
+                                });
+                            }
+                            else {
+                                hyperion_API.setEffectDuration(instance.val, state.val, effectDuration.val * 1000, (err, result) => {
+                                    setTimeout(() =>{
+                                    this.setState(id,{ val: '', ack: true });
+                                    this.setState(effectDuration,{ val: 0, ack: true });
+                                    this.readOutPriorities((err, result) => {});
+                                    },200);
+                                });
+                            }
                         });
                     });
                 }
@@ -595,11 +622,24 @@ class HyperionNg extends utils.Adapter {
 
                 if (id_arr[3] === 'control' && id_arr[4] === 'setColorRGB') {
                     this.getState(this.namespace + '.general.control.instance',(err, instance) => {
-                        hyperion_API.setColorRGB(instance.val, state.val, (err, result) => {
-                            setTimeout(() =>{
-                            this.setState(id,{ val: '255,255,255', ack: true });
-                            this.readOutPriorities((err, result) => {});
-                            },200);
+                        this.getState(this.namespace + '.general.control.durationEffectColor',(err, colorDuration) => {
+                            if (colorDuration == 0) {
+                                hyperion_API.setColorRGB(instance.val, state.val, (err, result) => {
+                                    setTimeout(() =>{
+                                    this.setState(id,{ val: '255,255,255', ack: true });
+                                    this.readOutPriorities((err, result) => {});
+                                    },200);
+                                });
+                            }
+                            else {
+                                hyperion_API.setColorRGBDuration(instance.val, state.val, colorDuration.val * 1000, (err, result) => {
+                                    setTimeout(() =>{
+                                    this.setState(id,{ val: '255,255,255', ack: true });
+                                    this.setState(colorDuration,{ val: 0, ack: true });
+                                    this.readOutPriorities((err, result) => {});
+                                    },200);
+                                });
+                            }
                         });
                     });
                 }
