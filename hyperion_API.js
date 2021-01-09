@@ -469,6 +469,31 @@ class Hyperion_API
             },callback);
         }
     }
+
+    /**
+     * Set Grabber as visible Priority. At Standard the Priority will be 250
+     *  
+     * @param {number}      instance        hyperion instance number to get informations for the correct one
+     * @param {Function}    callback	    callback function, using (err, result)
+     */
+    async setGrabberVisible(instance, callback) {
+        
+        const self = this;
+
+        self.sendMessage({
+            command     : "instance",
+            subcommand  : "switchTo",
+            instance    : instance
+        },function(){
+            self.databuffer = '';
+            setTimeout(function () {
+                self.sendMessage({
+                    command         : 'sourceselect',
+                    priority        : 250,
+                }, callback);
+            },50) ;
+        });
+    }
 }
 
 module.exports.Hyperion_API = Hyperion_API;

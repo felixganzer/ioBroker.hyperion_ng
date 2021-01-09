@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "hyperion_ng",
-        "version": "0.1.8",
+        "version": "0.1.9",
         "news": {
             "0.1.7": {
                 "en": "first feature complete version",

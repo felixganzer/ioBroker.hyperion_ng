@@ -50,33 +50,33 @@ class HyperionNg extends utils.Adapter {
                 //hyperion set Version
                 this.hyperionVersion = result.info.hyperion.version;
                 
-                var myobj = {type: 'instance independent parameter',common: {name: 'general'}, native:{id: 'general'}};
+                var myobj = {type: 'folder',common: {name: 'general'}, native:{id: 'general'}};
                     adapter.setObject('general', myobj);
 
                 //hyperion Info
                 var my_hyperion = result.info.hyperion;
-                var myobj = {type: 'hyperion Info',common: {name: 'hyperion Info'}, native:{id: 'hyperion Info'}};
+                var myobj = {type: 'folder',common: {name: 'hyperion Info'}, native:{id: 'hyperion Info'}};
                 adapter.setObject('general.hyperion', myobj);
                 
                 for (var hyperion in my_hyperion){
                     var my_arg_Name = hyperion;
                     var my_arg_val = my_hyperion[hyperion];
 
-                    myobj = {type: 'state', common: {role: my_arg_Name, type: 'state', name: my_arg_Name}, native:{id: my_arg_Name}};
+                    myobj = {type: 'state', common: {role: my_arg_Name, type: typeof(my_arg_val), name: my_arg_Name}, native:{id: my_arg_Name}};
                     adapter.setObject('general.hyperion.' + my_arg_Name, myobj);
                     adapter.setState('general.hyperion.' + my_arg_Name, my_arg_val, true);
                 }
                 
                 //System Info
                 var my_system = result.info.system;
-                myobj = {type: 'System Info',common: {name: 'System Info'}, native:{id: 'System Info'}};
+                myobj = {type: 'folder',common: {name: 'System Info'}, native:{id: 'System Info'}};
                 adapter.setObject('general.system', myobj);
 
                 for (var system in my_system){
                     var my_arg_Name = system;
                     var my_arg_val = my_system[system];
 
-                    myobj = {type: 'state', common: {role: my_arg_Name, type: 'state', name: my_arg_Name}, native:{id: my_arg_Name}};
+                    myobj = {type: 'state', common: {role: my_arg_Name, type: typeof(my_arg_val), name: my_arg_Name}, native:{id: my_arg_Name}};
                     adapter.setObject('general.system.' + my_arg_Name, myobj);
                     adapter.setState('general.system.' + my_arg_Name, my_arg_val, true);
                 }
@@ -184,7 +184,7 @@ class HyperionNg extends utils.Adapter {
                     var my_priorities       = result.info.priorities;
                     var my_priorities_ID    = -1;
 
-                    var myobj = {type: 'priorities',common: {name: 'priorities'}, native:{id: instance + 'priorities'}};
+                    var myobj = {type: 'folder',common: {name: 'priorities'}, native:{id: instance + 'priorities'}};
                     adapter.setObject(instance + '.' + 'priorities', myobj);
                     
                     adapter.log.info('create priorities');
@@ -195,7 +195,7 @@ class HyperionNg extends utils.Adapter {
                         my_priorities_ID++;
                         var my_priorities_Name =  my_priorities_ID + '-' + my_priorities[priorities].componentId;
 
-                        myobj = {type: my_priorities_Name,common: {name: my_priorities_Name}, native:{id: instance + 'priorities'+ my_priorities_ID + my_priorities_Name}};
+                        myobj = {type: 'folder',common: {name: my_priorities_Name}, native:{id: instance + 'priorities'+ my_priorities_ID + my_priorities_Name}};
                         adapter.setObject(instance + '.' + 'priorities' + '.' + my_priorities_Name, myobj);
 
                         var object_array = my_priorities[priorities];
@@ -248,7 +248,7 @@ class HyperionNg extends utils.Adapter {
                     var my_instance_Name = my_instances[instance].friendly_name;
                     var my_instance_running = my_instances[instance].running;
 
-                    var myobj = {type: 'Instance_ID',common: {name: my_instance_Name}, native:{id: my_instance_Name}};
+                    var myobj = {type: 'folder',common: {name: my_instance_Name}, native:{id: my_instance_Name}};
                     adapter.setObject(my_instance_ID.toString(), myobj);
 
                     myobj = {type: 'state', common: {role: 'running status', type: 'boolean', name: my_instance_Name}, native:{id: my_instance_ID + my_instance_Name}};
@@ -478,6 +478,48 @@ class HyperionNg extends utils.Adapter {
         });
         await this.setStateAsync('general.control.setColorRGB', { val: '255,255,255', ack: true });
 
+        // Object to updateAdapter
+        await this.setObjectNotExistsAsync('general.control.updateAdapter', {
+            type: 'state',
+            common: {
+                name: 'update all Datapoints',
+                type: 'boolean',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.updateAdapter', { val: false, ack: true });
+
+        // Object to updatePriorities
+        await this.setObjectNotExistsAsync('general.control.updatePriorities', {
+            type: 'state',
+            common: {
+                name: 'update all Priorities',
+                type: 'boolean',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.updatePriorities', { val: false, ack: true });
+
+        // Object to setGrabberVisible
+        await this.setObjectNotExistsAsync('general.control.setGrabberVisible', {
+            type: 'state',
+            common: {
+                name: 'set Grabber Visible',
+                type: 'boolean',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.setGrabberVisible', { val: false, ack: true });
+
     }
 
     /**
@@ -664,31 +706,52 @@ class HyperionNg extends utils.Adapter {
                         });
                     });
                 }
+
+                // #####################  update whole Adapter ###############
+
+                if (id_arr[3] === 'control' && id_arr[4] === 'updateAdapter') {
+                    this.readOutInstances((err, result) => {
+                        this.readOutComponents((err, result) => {
+                            this.readOutAdjustments((err, result) => {
+                                this.readOutPriorities((err, result) => {
+                                    this.readOutEffects((err, result) => {
+                                        this.setState(id,{ val: false, ack: true });
+                                        this.log.info("Updated whole Adapter Parameter");
+                                        this.subscribeStates('*');
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
+
+                // #####################  update Priorities ###############
+
+                if (id_arr[3] === 'control' && id_arr[4] === 'updatePriorities') {
+                    this.readOutPriorities((err, result) => {
+                        this.setState(id,{ val: false, ack: true });
+                        this.log.info("Updated Priorities");
+                    });         
+                }
+
+                // #####################  set Grabber Visible ###############
+
+                if (id_arr[3] === 'control' && id_arr[4] === 'setGrabberVisible') {
+                    this.getState(this.namespace + '.general.control.instance',(err, instance) => {
+                        hyperion_API.setGrabberVisible(instance.val, (err, result) => {
+                            this.readOutPriorities((err, result) => {
+                                this.setState(id,{ val: false, ack: true });
+                                this.log.info("set Grabber Visible");
+                            }); 
+                        });   
+                    });     
+                }
             }
         } else {
             // The state was deleted
             this.log.debug(`state ${id} deleted`);
         }
     }
-
-    // If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-    // /**
-    //  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-    //  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-    //  * @param {ioBroker.Message} obj
-    //  */
-    // onMessage(obj) {
-    //     if (typeof obj === 'object' && obj.message) {
-    //         if (obj.command === 'send') {
-    //             // e.g. send email or pushover or whatever
-    //             this.log.info('send command');
-
-    //             // Send response in callback if required
-    //             if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-    //         }
-    //     }
-    // }
-
 }
 
 // @ts-ignore parent is a valid property on module

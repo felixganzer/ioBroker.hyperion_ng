@@ -46,9 +46,17 @@ To set a color you have to set an instance number under general.control.instance
 
 Over general.control.durationEffectColor you can set a duration in seconds. You have to set these value before you set the color. The standard value 0. This will set the effect time to infinity.
 
+### set Grabber Visible
+
+you can set the video Grabber as the visible priority if you set general.control.setGrabberVisible to true. Before you have to set the instance to control under general.control.instance
+
 ### clear effects and colors
 
 To clear a priority you have to set an instance number under general.control.instance. After that you can set the parameter general.control.clearAll or general.control.clearVisible to true to clear priorities. After success the boolean will be set to false.
+
+### update Data from Hyperion
+
+You can manually update the data of the whole adaptor, if you set general.control.updateAdapter to true. With the datapoint general.control.updatePriorities you can update the Priorities of all instances
 
 
 
@@ -110,6 +118,11 @@ For later updates, the above procedure is not necessary. Just do the following:
 1. Execute `iobroker upload hyperion_ng` on the ioBroker host
 
 ## Changelog
+
+### 0.1.9 (2021.01.09)
+* (felixganzer) bugfix: reduce warnings
+* (felixganzer) add set Grabber Visible without any error catching
+* (felixganzer) add start update whole adapter data points and update Priorities
 
 ### 0.1.8 (2021.01.07)
 * (felixganzer) add set duration of effect and color to set
