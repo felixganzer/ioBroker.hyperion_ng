@@ -1,8 +1,8 @@
 ![Logo](admin/hyperion_ng.png)
 # ioBroker.hyperion_ng
 
-[![NPM version](http://img.shields.io/npm/v/ioBroker.hyperion_ng.svg)](https://www.npmjs.com/package/ioBroker.hyperion_ng)
-[![Downloads](https://img.shields.io/npm/dm/ioBroker.hyperion_ng.svg)](https://www.npmjs.com/package/ioBroker.hyperion_ng)
+[![NPM version](http://img.shields.io/npm/v/iobroker.hyperion_ng.svg)](https://www.npmjs.com/package/iobroker.hyperion_ng)
+[![Downloads](https://img.shields.io/npm/dm/iobroker.hyperion_ng.svg)](https://www.npmjs.com/package/iobroker.hyperion_ng)
 ![Number of Installations (latest)](http://iobroker.live/badges/hyperion_ng-installed.svg)
 ![Number of Installations (stable)](http://iobroker.live/badges/hyperion_ng-stable.svg)
 [![Dependency Status](https://img.shields.io/david/felixganzer/ioBroker.hyperion_ng.svg)](https://david-dm.org/felixganzer/ioBroker.hyperion_ng)
