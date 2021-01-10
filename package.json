@@ -1,7 +1,7 @@
 {
   "name": "iobroker.hyperion_ng",
   "version": "0.1.9",
-  "description": "this is a short description",
+  "description": "this adapter can control hyperionNG with iobroker",
   "author": {
     "name": "felixganzer",
     "email": "felixganzer@web.de"
@@ -9,7 +9,7 @@
   "homepage": "https://github.com/felixganzer/ioBroker.hyperion_ng",
   "license": "MIT",
   "keywords": [
-    "hyperion"
+    "hyperionng"
   ],
   "repository": {
     "type": "git",
