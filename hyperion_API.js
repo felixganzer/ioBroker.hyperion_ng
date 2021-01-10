@@ -6,11 +6,12 @@ var callbackFns = [];
 
 class Hyperion_API
 {
-    constructor(adapter, host_IP = '127.0.0.1', host_Port = 19444, priority = 50){
+    constructor(adapter, host_IP = '127.0.0.1', host_Port = 19444, priority = 50, timeout = 1){
 
         this.host_IP    = host_IP;
         this.host_Port  = host_Port;
         this.priority 	= priority;
+        this.timeout    = timeout; // in Minuten
         this.socket     = null;
         adapterMain     = adapter;
 
@@ -68,7 +69,7 @@ class Hyperion_API
             adapterMain.log.info('socket is connected');
         }.bind(this));
 
-        this.socket.setTimeout(30000);
+        this.socket.setTimeout(60000 * this.timeout);
 
         this.socket.setEncoding('utf8');
 
@@ -472,11 +473,11 @@ class Hyperion_API
 
     /**
      * Set Grabber as visible Priority. At Standard the Priority will be 250
-     *  
+     * @param {number}      priority  
      * @param {number}      instance        hyperion instance number to get informations for the correct one
      * @param {Function}    callback	    callback function, using (err, result)
      */
-    async setGrabberVisible(instance, callback) {
+    async setGrabberVisible(priority, instance, callback) {
         
         const self = this;
 
@@ -489,7 +490,7 @@ class Hyperion_API
             setTimeout(function () {
                 self.sendMessage({
                     command         : 'sourceselect',
-                    priority        : 250,
+                    priority        : priority,
                 }, callback);
             },50) ;
         });

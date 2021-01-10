@@ -66,44 +66,137 @@
 <body>
 
     <div class="m adapter-container">
-
         <div class="row">
-            <div class="col s12 m4 l2">
-                <img src="hyperion_ng.png" class="logo">
-            </div>
+            <!-- Definition der Tabs in der Einstellungen Config -->
+            <div class="col s12">
+                <ul class="tabs">
+                    <li class="tab col s6">
+                        <a href="#tab-main" class="translate active" data-lang="Main settings">Main Settings</a>
+                    </li>
+                    <li class="tab col s6">
+                        <a href="#tab-hyperion-options" class="translate" data-lang="Hyperion Options">Manage Devices</a>
+                    </li>
+                </ul>
+            </div> <!-- End of Tabs in der Einstellungen Config -->
+            
+            <!-- Definition Main Tab -->
+            <div id="tab-main" class="col s12 page">
+                <div class="row">
+                    <div class="col s12">
+                        <img src="hyperion_ng.png" class="logo">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <h6>If You change Paramter at these Tab you have to restart the adapter</h6>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- IP Adress -->
+                    <div class="row" style="background-color:rgb(240, 240, 240);">
+                        <div class="divider"></div>
+                        <div class="col s1"></div>
+                        <div class="col s3">
+                            <input class="value" id="address" />
+                            <label class="translate" for="address">IP adress</label>
+                        </div>
+                        <div class="col s7">
+                            <blockquote>
+                            <h6>IP Adress of your Hyperion.NG device</h6>
+                            </blockquote>
+                        </div>
+                        <div class="col s1"></div>                       
+                    </div>
+                    <!-- JSON Port -->
+                    <div class="row" style="background-color:rgb(240, 240, 240);">
+                        <div class="divider"></div>
+                        <div class="col s1"></div>
+                        <div class="col s3">
+                            <input class="value" id="json_port" type="number" min="1" max="65565"/>
+                            <label class="translate" for="json_port">Standard Value: 19444</label>
+                        </div>
+                        <div class="col s7">
+                            <blockquote>
+                            <h6>Communication port of Hyperion.NG Instance. We use the port for the Raw Communication.</h6>
+                            </blockquote>
+                        </div>
+                        <div class="col s1"></div>
+                    </div>
+                    <!-- Priority -->
+                    <div class="row" style="background-color:rgb(240, 240, 240);">
+                        <div class="divider"></div>
+                        <div class="col s1"></div>
+                        <div class="col s3">
+                                <input class="value" id="prio" type="number" min="1" max="100"/>
+                                <label class="translate" for="prio">Standard Value: 50</label>
+                        </div>
+                        <div class="col s7">
+                            <blockquote>
+                            <h6>Priority of your effects and colors you set over ioBroker. It is recomented a value between 1 and 99.</h6>
+                            </blockquote>
+                        </div>
+                        <div class="col s1"></div>
+                    </div>
+                    <!-- Connection Timeout -->
+                    <div class="row" style="background-color:rgb(240, 240, 240);">
+                        <div class="divider"></div>
+                        <div class="col s1"></div>
+                        <div class="col s3">
+                                <input class="value" id="connectionTimeout" type="number" min="1" max="999"/>
+                                <label class="translate" for="connectionTimeout">Standard Value: 1</label>
+                        </div>
+                        <div class="col s7">
+                            <blockquote>
+                            <h6>Timeout for connection to hyperion. Value is set in minutes. Aktual it has no influence.</h6>
+                            </blockquote>
+                        </div>
+                        <div class="col s1"></div>
+                    </div>
+                </div>
+            </div> <!-- End of Main Tab -->
+
+            <!-- Definition Hyperion Option Tab -->
+            <div id="tab-hyperion-options" class="col s12 page">
+                <div class="row">
+                    <div class="col s12 m4 l4">
+                        <img src="hyperion_ng.png" class="logo">
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- priority internal Grabber -->
+                    <div class="row" style="background-color:rgb(240, 240, 240);">
+                        <div class="divider"></div>
+                        <div class="col s1"></div>
+                        <div class="col s3">
+                            <input class="value" id="prioInternalGrabber" type="number" min="1" max="254"/>
+                            <label class="translate" for="prioInternalGrabber">Standard Value: 250</label>
+                        </div>
+                        <div class="col s7">
+                            <blockquote>
+                            <h6>Priority value of the internal Grabber of Hyperion. You can change these value to have the same value as at hyperion. It is not possible to read out the value from Hyperion.</h6>
+                            </blockquote>
+                        </div>
+                        <div class="col s1"></div>                       
+                    </div>
+                    <!-- priority USB Grabber -->
+                    <div class="row" style="background-color:rgb(240, 240, 240);">
+                        <div class="divider"></div>
+                        <div class="col s1"></div>
+                        <div class="col s3">
+                            <input class="value" id="prioUSBGrabber" type="number" min="1" max="254"/>
+                            <label class="translate" for="prioUSBGrabber">Standard Value: 240</label>
+                        </div>
+                        <div class="col s7">
+                            <blockquote>
+                            <h6>Priority value of the USB Grabber of Hyperion. You can change these value to have the same value as at hyperion. It is not possible to read out the value from Hyperion.</h6>
+                            </blockquote>
+                        </div>
+                        <div class="col s1"></div>                       
+                    </div>
+                </div>
+            </div> <!-- End of Hyperion Option Tab -->
         </div>
-
-        <!-- Put your content here -->
-
-        <!-- For example columns with settings: -->
-        <!-- <div class="row">
-            <div class="col s6 input-field">
-                <input type="checkbox" class="value" id="option1" />
-                <label for="option1" class="translate">option1</label>
-            </div>
-
-            <div class="col s6 input-field">
-                <input type="text" class="value" id="option2" />
-                <label for="option2" class="translate">option2</label>
-            </div>
-        </div> -->
-
-        <div class="row">
-            <div class="col s12 m8">
-                <input class="value" id="address" />
-                <label class="translate" for="address">address</label>
-            </div>
-            <div class="col s12 m4">
-                <input class="value" id="json_port" type="number" min="1" max="65565"/>
-                <label class="translate" for="json_port">json_port</label>
-            </div>
-            <div class="col s12 m4">
-                <input class="value" id="prio" type="number" min="1" max="999"/>
-                <label class="translate" for="prio">priority</label>
-            </div>
-        </div>
-
-    </div>
+    </div><!-- End of adapter container -->
 
 </body>
 

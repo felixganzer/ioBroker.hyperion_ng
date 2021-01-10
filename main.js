@@ -507,10 +507,10 @@ class HyperionNg extends utils.Adapter {
         await this.setStateAsync('general.control.updatePriorities', { val: false, ack: true });
 
         // Object to setGrabberVisible
-        await this.setObjectNotExistsAsync('general.control.setGrabberVisible', {
+        await this.setObjectNotExistsAsync('general.control.setInternalGrabberVisible', {
             type: 'state',
             common: {
-                name: 'set Grabber Visible',
+                name: 'set Internal Grabber Visible',
                 type: 'boolean',
                 role: 'control.state',
                 read: true,
@@ -518,7 +518,21 @@ class HyperionNg extends utils.Adapter {
             },
             native: {},
         });
-        await this.setStateAsync('general.control.setGrabberVisible', { val: false, ack: true });
+        await this.setStateAsync('general.control.setInternalGrabberVisible', { val: false, ack: true });
+
+        // Object to setGrabberVisible
+        await this.setObjectNotExistsAsync('general.control.setUSBGrabberVisible', {
+            type: 'state',
+            common: {
+                name: 'set USB Grabber Visible',
+                type: 'boolean',
+                role: 'control.state',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+        await this.setStateAsync('general.control.setUSBGrabberVisible', { val: false, ack: true });
 
     }
 
@@ -527,7 +541,7 @@ class HyperionNg extends utils.Adapter {
      */
     async onReady() {
 
-        hyperion_API = new Hyperion_API.Hyperion_API(this, this.config['address'], this.config['json_port'], this.config['prio']);
+        hyperion_API = new Hyperion_API.Hyperion_API(this, this.config['address'], this.config['json_port'], this.config['prio'], this.config['connectionTimeout']);
 
         await this.createControlParameter();
 
@@ -734,14 +748,27 @@ class HyperionNg extends utils.Adapter {
                     });         
                 }
 
-                // #####################  set Grabber Visible ###############
+                // #####################  set internal Grabber Visible ###############
 
-                if (id_arr[3] === 'control' && id_arr[4] === 'setGrabberVisible') {
+                if (id_arr[3] === 'control' && id_arr[4] === 'setInternalGrabberVisible') {
                     this.getState(this.namespace + '.general.control.instance',(err, instance) => {
-                        hyperion_API.setGrabberVisible(instance.val, (err, result) => {
+                        hyperion_API.setGrabberVisible(this.config['prioInternalGrabber'], instance.val, (err, result) => {
                             this.readOutPriorities((err, result) => {
                                 this.setState(id,{ val: false, ack: true });
-                                this.log.info("set Grabber Visible");
+                                this.log.info("set Internal Grabber Visible");
+                            }); 
+                        });   
+                    });     
+                }
+
+                // #####################  set USB Grabber Visible ###############
+
+                if (id_arr[3] === 'control' && id_arr[4] === 'setUSBGrabberVisible') {
+                    this.getState(this.namespace + '.general.control.instance',(err, instance) => {
+                        hyperion_API.setGrabberVisible(this.config['prioUSBGrabber'], instance.val, (err, result) => {
+                            this.readOutPriorities((err, result) => {
+                                this.setState(id,{ val: false, ack: true });
+                                this.log.info("set USB Grabber Visible");
                             }); 
                         });   
                     });     

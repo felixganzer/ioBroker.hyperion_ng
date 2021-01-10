@@ -16,6 +16,8 @@
 
 With this adapter you can control your HyperionNG devices
 
+https://hyperion-project.org/
+
 ## Manual
 
 ### General
@@ -48,7 +50,7 @@ Over general.control.durationEffectColor you can set a duration in seconds. You 
 
 ### set Grabber Visible
 
-you can set the video Grabber as the visible priority if you set general.control.setGrabberVisible to true. Before you have to set the instance to control under general.control.instance
+you can set the internal or USB video Grabber as the visible priority if you set general.control.setinternalGrabberVisible or setUSBGrabberVisible to true. Before you have to set the instance to control under general.control.instance. If you changed the standard priorities at hyperion you have to change the values under the adapter config page to have the same values.
 
 ### clear effects and colors
 
@@ -118,6 +120,10 @@ For later updates, the above procedure is not necessary. Just do the following:
 1. Execute `iobroker upload hyperion_ng` on the ioBroker host
 
 ## Changelog
+
+### 0.1.10 (2021.01.10)
+* (felixganzer) reorginize config page and add config parameter
+* (felixganzer) add set internal or USB Grabber Visible with boolean
 
 ### 0.1.9 (2021.01.09)
 * (felixganzer) bugfix: reduce warnings

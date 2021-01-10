@@ -1,6 +1,6 @@
 {
   "name": "iobroker.hyperion_ng",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "this adapter can control hyperionNG with iobroker",
   "author": {
     "name": "felixganzer",
