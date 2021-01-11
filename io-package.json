@@ -3,17 +3,17 @@
         "name": "hyperion_ng",
         "version": "0.1.10",
         "news": {
-            "0.1.7": {
-                "en": "first feature complete version",
-                "de": "erste Funktion vollständige Version",
-                "ru": "первая функция полная версия",
-                "pt": "versão completa do primeiro recurso",
-                "nl": "eerste feature complete versie",
-                "fr": "première fonctionnalité version complète",
-                "it": "prima versione completa di funzionalità",
-                "es": "primera versión completa de funciones",
-                "pl": "pierwsza pełna wersja funkcji",
-                "zh-cn": "第一功能完整版"
+            "0.1.10": {
+                "en": "first version which will be released at iobroker",
+                "de": "erste Version, die bei iobroker veröffentlicht wird",
+                "ru": "первая версия, которая будет выпущена на iobroker",
+                "pt": "primeira versão que será lançada na iobroker",
+                "nl": "eerste versie die zal worden uitgebracht op iobroker",
+                "fr": "première version qui sortira chez iobroker",
+                "it": "prima versione che sarà rilasciata su iobroker",
+                "es": "primera versión que se lanzará en iobroker",
+                "pl": "pierwsza wersja, która zostanie wydana w iobroker",
+                "zh-cn": "第一个版本，将在iobroker上发布"
             },
             "0.0.1": {
                 "en": "initial release",
