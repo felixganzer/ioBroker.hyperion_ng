@@ -1,23 +1,42 @@
 {
-  "name": "iobroker.hyperion_ng",
-  "version": "0.1.10",
-  "description": "this adapter can control hyperionNG with iobroker",
+  "_args": [
+    [
+      "iobroker.hyperion_ng@https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
+      "C:\\iobroker"
+    ]
+  ],
+  "_from": "iobroker.hyperion_ng@https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
+  "_id": "iobroker.hyperion_ng@https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
+  "_inBundle": false,
+  "_integrity": "sha512-xuBIA6ooYXn/5kIUvkCgBfCM7ApLO6oHgcim5xo8LU6pF/vYM9elqAfgps/pT7o/13QkQfJdxwzCT+QF8wShuA==",
+  "_location": "/iobroker.hyperion_ng",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "iobroker.hyperion_ng@https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
+    "name": "iobroker.hyperion_ng",
+    "escapedName": "iobroker.hyperion_ng",
+    "rawSpec": "https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
+    "saveSpec": "https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
+    "fetchSpec": "https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": false,
+  "_spec": "https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
+  "_where": "C:\\iobroker",
   "author": {
     "name": "felixganzer",
     "email": "felixganzer@web.de"
   },
-  "homepage": "https://github.com/felixganzer/ioBroker.hyperion_ng",
-  "license": "MIT",
-  "keywords": [
-    "hyperionng"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/felixganzer/ioBroker.hyperion_ng"
+  "bugs": {
+    "url": "https://github.com/felixganzer/ioBroker.hyperion_ng/issues"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^2.4.0"
   },
+  "description": "this adapter can control hyperionNG with iobroker",
   "devDependencies": {
     "@iobroker/testing": "^2.4.0",
     "@types/chai": "^4.2.14",
@@ -39,18 +58,25 @@
     "sinon-chai": "^3.5.0",
     "typescript": "^4.1.3"
   },
+  "homepage": "https://github.com/felixganzer/ioBroker.hyperion_ng",
+  "keywords": [
+    "hyperionng"
+  ],
+  "license": "MIT",
   "main": "main.js",
+  "name": "iobroker.hyperion_ng",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixganzer/ioBroker.hyperion_ng.git"
+  },
   "scripts": {
+    "check": "tsc --noEmit -p tsconfig.check.json",
+    "lint": "eslint",
+    "test": "npm run test:js && npm run test:package",
+    "test:integration": "mocha test/integration --exit",
     "test:js": "mocha --config test/mocharc.custom.json \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",
     "test:package": "mocha test/package --exit",
-    "test:unit": "mocha test/unit --exit",
-    "test:integration": "mocha test/integration --exit",
-    "test": "npm run test:js && npm run test:package",
-    "check": "tsc --noEmit -p tsconfig.check.json",
-    "lint": "eslint"
+    "test:unit": "mocha test/unit --exit"
   },
-  "bugs": {
-    "url": "https://github.com/felixganzer/ioBroker.hyperion_ng/issues"
-  },
-  "readmeFilename": "README.md"
+  "version": "0.1.10"
 }

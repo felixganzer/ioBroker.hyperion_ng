@@ -121,6 +121,10 @@ For later updates, the above procedure is not necessary. Just do the following:
 
 ## Changelog
 
+### 0.1.11 (2021.01.11)
+* (felixganzer) bugfix: reduce warning "state has no existing object" for js-controller 3.2
+* (felixganzer) bugfix: read out priority of color crash at js-controller 3.2
+
 ### 0.1.10 (2021.01.10)
 * (felixganzer) reorginize config page and add config parameter
 * (felixganzer) add set internal or USB Grabber Visible with boolean

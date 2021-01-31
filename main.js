@@ -43,7 +43,7 @@ class HyperionNg extends utils.Adapter {
      */
     async readOutSystemInformations(callback) {
 
-        hyperion_API.getSystemInfo((err, result) => {
+        hyperion_API.getSystemInfo(async (err, result) => {
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'sysinfo') {
 
@@ -51,34 +51,34 @@ class HyperionNg extends utils.Adapter {
                 this.hyperionVersion = result.info.hyperion.version;
                 
                 var myobj = {type: 'folder',common: {name: 'general'}, native:{id: 'general'}};
-                    adapter.setObject('general', myobj);
+                await adapter.setObjectNotExistsAsync('general', myobj);
 
                 //hyperion Info
                 var my_hyperion = result.info.hyperion;
                 var myobj = {type: 'folder',common: {name: 'hyperion Info'}, native:{id: 'hyperion Info'}};
-                adapter.setObject('general.hyperion', myobj);
+                await adapter.setObjectNotExistsAsync('general.hyperion', myobj);
                 
                 for (var hyperion in my_hyperion){
                     var my_arg_Name = hyperion;
                     var my_arg_val = my_hyperion[hyperion];
 
                     myobj = {type: 'state', common: {role: my_arg_Name, type: typeof(my_arg_val), name: my_arg_Name}, native:{id: my_arg_Name}};
-                    adapter.setObject('general.hyperion.' + my_arg_Name, myobj);
-                    adapter.setState('general.hyperion.' + my_arg_Name, my_arg_val, true);
+                    await adapter.setObjectNotExistsAsync('general.hyperion.' + my_arg_Name, myobj);
+                    await adapter.setStateAsync('general.hyperion.' + my_arg_Name, my_arg_val, true);
                 }
                 
                 //System Info
                 var my_system = result.info.system;
                 myobj = {type: 'folder',common: {name: 'System Info'}, native:{id: 'System Info'}};
-                adapter.setObject('general.system', myobj);
+                await adapter.setObjectNotExistsAsync('general.system', myobj);
 
                 for (var system in my_system){
                     var my_arg_Name = system;
                     var my_arg_val = my_system[system];
 
                     myobj = {type: 'state', common: {role: my_arg_Name, type: typeof(my_arg_val), name: my_arg_Name}, native:{id: my_arg_Name}};
-                    adapter.setObject('general.system.' + my_arg_Name, myobj);
-                    adapter.setState('general.system.' + my_arg_Name, my_arg_val, true);
+                    await adapter.setObjectNotExistsAsync('general.system.' + my_arg_Name, myobj);
+                    await adapter.setStateAsync('general.system.' + my_arg_Name, my_arg_val, true);
                 }
             }
             else {
@@ -95,7 +95,7 @@ class HyperionNg extends utils.Adapter {
      */
     async readOutEffects(callback) {
 
-        hyperion_API.getServerInfo((err, result) => {
+        hyperion_API.getServerInfo(async (err, result) => {
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
 
@@ -104,7 +104,7 @@ class HyperionNg extends utils.Adapter {
                 var my_effects_ID    = -1;
 
                 var myobj = {type: 'folder',common: {name: 'effects'}, native:{id: 'effects'}};
-                adapter.setObject('general.effects', myobj);
+                await adapter.setObjectNotExistsAsync('general.effects', myobj);
                 
                 adapter.log.info('create effects');
 
@@ -116,7 +116,7 @@ class HyperionNg extends utils.Adapter {
                     var my_effects_Name =  my_effects_ID_string + '-' + my_effects[effects].name;
 
                     myobj = {type: 'folder', common: {name: my_effects_Name}, native:{id: 'effects'+ my_effects_ID + my_effects_Name}};
-                    adapter.setObject('general.effects' + '.' + my_effects_Name, myobj);
+                    await adapter.setObjectNotExistsAsync('general.effects' + '.' + my_effects_Name, myobj);
 
                     var object_array = my_effects[effects].args;
                     var object_path = 'general.effects' + '.' + my_effects_Name;
@@ -127,8 +127,8 @@ class HyperionNg extends utils.Adapter {
                         var entry_val = object_array[entry];
 
                         myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
-                        adapter.setObject(object_path + '.' + entry_Name, myobj);
-                        adapter.setState(object_path + '.' + entry_Name, entry_val, true);
+                        await adapter.setObjectNotExistsAsync(object_path + '.' + entry_Name, myobj);
+                        await adapter.setStateAsync(object_path + '.' + entry_Name, entry_val, true);
                     }
                 } 
             }
@@ -178,14 +178,14 @@ class HyperionNg extends utils.Adapter {
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
 
-                self.deleteObjects('hyperion_ng.0.' + instance + '.priorities*',function(err, result2){ 
+                self.deleteObjects('hyperion_ng.0.' + instance + '.priorities*',async function(err, result2){ 
                             
                     // create priority folder at instance
                     var my_priorities       = result.info.priorities;
                     var my_priorities_ID    = -1;
 
                     var myobj = {type: 'folder',common: {name: 'priorities'}, native:{id: instance + 'priorities'}};
-                    adapter.setObject(instance + '.' + 'priorities', myobj);
+                    await adapter.setObjectNotExistsAsync(instance + '.' + 'priorities', myobj);
                     
                     adapter.log.info('create priorities');
 
@@ -196,7 +196,7 @@ class HyperionNg extends utils.Adapter {
                         var my_priorities_Name =  my_priorities_ID + '-' + my_priorities[priorities].componentId;
 
                         myobj = {type: 'folder',common: {name: my_priorities_Name}, native:{id: instance + 'priorities'+ my_priorities_ID + my_priorities_Name}};
-                        adapter.setObject(instance + '.' + 'priorities' + '.' + my_priorities_Name, myobj);
+                        await adapter.setObjectNotExistsAsync(instance + '.' + 'priorities' + '.' + my_priorities_Name, myobj);
 
                         var object_array = my_priorities[priorities];
                         var object_path = instance + '.' + 'priorities' + '.' + my_priorities_Name;
@@ -206,9 +206,21 @@ class HyperionNg extends utils.Adapter {
                             var entry_Name = entry;
                             var entry_val = object_array[entry];
 
-                            myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
-                            adapter.setObject(object_path + '.' + entry_Name, myobj);
-                            adapter.setState(object_path + '.' + entry_Name, entry_val, true);
+                            if (entry_Name == 'value') {
+                                for (var value in entry_val){
+                                    var value_Name = value;
+                                    var value_val = entry_val[value];
+                                    myobj = {type: 'state', common: {role: value_Name, type: typeof(value_val), name: value_Name}, native:{id: value_Name}};
+                                    await adapter.setObjectNotExistsAsync(object_path + '.' + value_Name, myobj);
+                                    await adapter.setStateAsync(object_path + '.' + value_Name, value_val, true);
+                                }
+                            }
+                            else{
+                                myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
+                                await adapter.setObjectNotExistsAsync(object_path + '.' + entry_Name, myobj);
+                                await adapter.setStateAsync(object_path + '.' + entry_Name, entry_val, true);
+                            }
+
                         }
                     } 
 
@@ -235,7 +247,7 @@ class HyperionNg extends utils.Adapter {
      */
     async readOutInstances(callback) {
 
-        hyperion_API.getServerInfo(function(err, result){
+        hyperion_API.getServerInfo(async function(err, result){
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
 
@@ -249,11 +261,11 @@ class HyperionNg extends utils.Adapter {
                     var my_instance_running = my_instances[instance].running;
 
                     var myobj = {type: 'folder',common: {name: my_instance_Name}, native:{id: my_instance_Name}};
-                    adapter.setObject(my_instance_ID.toString(), myobj);
+                    await adapter.setObjectNotExistsAsync(my_instance_ID.toString(), myobj);
 
                     myobj = {type: 'state', common: {role: 'running status', type: 'boolean', name: my_instance_Name}, native:{id: my_instance_ID + my_instance_Name}};
-                    adapter.setObject(my_instance_ID + '.' + 'running', myobj);
-                    adapter.setState(my_instance_ID + '.' + 'running', my_instance_running, true);
+                    await adapter.setObjectNotExistsAsync(my_instance_ID + '.' + 'running', myobj);
+                    await adapter.setStateAsync(my_instance_ID + '.' + 'running', my_instance_running, true);
                     
                     numberOfInstances++;
                 }
@@ -275,7 +287,7 @@ class HyperionNg extends utils.Adapter {
 
         const self = this;
 
-        hyperion_API.getServerInfo(function(err, result){
+        hyperion_API.getServerInfo(async function(err, result){
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
 
@@ -294,27 +306,27 @@ class HyperionNg extends utils.Adapter {
                         native: {id: 'components'},
                     }
 
-                    adapter.setObject(instance + '.' + 'components', myobj);
+                    await adapter.setObjectNotExistsAsync(instance + '.' + 'components', myobj);
 
                     myobj = {type: 'state', common: {role: 'set component status', type: 'boolean', name: my_component_Name}, native:{id: instance + my_component_Name}};
 
-                    adapter.setObject(instance + '.' + 'components' + '.' + my_component_Name, myobj);
-                    adapter.setState(instance + '.' + 'components' + '.' + my_component_Name, my_component_status, true);
+                    await adapter.setObjectNotExistsAsync(instance + '.' + 'components' + '.' + my_component_Name, myobj);
+                    await adapter.setStateAsync(instance + '.' + 'components' + '.' + my_component_Name, my_component_status, true);
                 }
 
                 // read out video mode
                 var my_videoMode = result.info.videomode;
                 myobj = {type: 'state', common: {role: 'video mode', type: 'string', name: 'video mode'}, native:{id: instance + 'video mode'}};
 
-                adapter.setObject(instance + '.' + 'video mode', myobj);
-                adapter.setState(instance + '.' + 'video mode', my_videoMode, true);
+                await adapter.setObjectNotExistsAsync(instance + '.' + 'video mode', myobj);
+                await adapter.setStateAsync(instance + '.' + 'video mode', my_videoMode, true);
 
                 // read out LED Mapping
                 var my_imageToLedMappingType = result.info.imageToLedMappingType;
                 myobj = {type: 'state', common: {role: 'imageToLedMappingType', type: 'string', name: 'imageToLedMappingType'}, native:{id: instance + 'imageToLedMappingType'}};
 
-                adapter.setObject(instance + '.' + 'imageToLedMappingType', myobj);
-                adapter.setState(instance + '.' + 'imageToLedMappingType', my_imageToLedMappingType, true);
+                await adapter.setObjectNotExistsAsync(instance + '.' + 'imageToLedMappingType', myobj);
+                await adapter.setStateAsync(instance + '.' + 'imageToLedMappingType', my_imageToLedMappingType, true);
 
                 instance++;
             }
@@ -341,7 +353,7 @@ class HyperionNg extends utils.Adapter {
 
         const self = this;
 
-        hyperion_API.getServerInfo(function(err, result){
+        hyperion_API.getServerInfo(async function(err, result){
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
                 
@@ -354,7 +366,7 @@ class HyperionNg extends utils.Adapter {
                     native: {id: 'adjustments'},
                 }
 
-                adapter.setObject(instance + '.' + 'adjustments', myobj);
+                await adapter.setObjectNotExistsAsync(instance + '.' + 'adjustments', myobj);
 
                 var object_array = result.info.adjustment[0];
                 var object_path = instance + '.' + 'adjustments';
@@ -367,8 +379,8 @@ class HyperionNg extends utils.Adapter {
                     var entry_val = object_array[entry];
 
                     myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
-                    adapter.setObject(object_path + '.' + entry_Name, myobj);
-                    adapter.setState(object_path + '.' + entry_Name, entry_val, true);
+                    await adapter.setObjectNotExistsAsync(object_path + '.' + entry_Name, myobj);
+                    await adapter.setStateAsync(object_path + '.' + entry_Name, entry_val, true);
                 }
 
                 instance++;
