@@ -121,7 +121,10 @@ For later updates, the above procedure is not necessary. Just do the following:
 
 ## Changelog
 
-### 0.1.11 (2021.01.11)
+### 0.1.12 (2021.02.02)
+* (felixganzer) bugfix: add type-of-is to dependencies
+
+### 0.1.11 (2021.01.30)
 * (felixganzer) bugfix: reduce warning "state has no existing object" for js-controller 3.2
 * (felixganzer) bugfix: read out priority of color crash at js-controller 3.2
 
