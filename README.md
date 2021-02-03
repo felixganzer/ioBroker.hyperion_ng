@@ -48,6 +48,8 @@ To set a color you have to set an instance number under general.control.instance
 
 Over general.control.durationEffectColor you can set a duration in seconds. You have to set these value before you set the color. The standard value 0. This will set the effect time to infinity.
 
+An other possibility to set the color is over HSL. For these it exist 3 datapoints at general.control.setColorHSL. If one of these datapoints will be changed, the color will be updated.
+
 ### set Grabber Visible
 
 you can set the internal or USB video Grabber as the visible priority if you set general.control.setinternalGrabberVisible or setUSBGrabberVisible to true. Before you have to set the instance to control under general.control.instance. If you changed the standard priorities at hyperion you have to change the values under the adapter config page to have the same values.
@@ -120,6 +122,9 @@ For later updates, the above procedure is not necessary. Just do the following:
 1. Execute `iobroker upload hyperion_ng` on the ioBroker host
 
 ## Changelog
+
+### 0.1.13 (2021.02.03)
+* (felixganzer) add set Color over HSL values
 
 ### 0.1.12 (2021.02.02)
 * (felixganzer) bugfix: add type-of-is to dependencies

@@ -488,7 +488,48 @@ class HyperionNg extends utils.Adapter {
             },
             native: {},
         });
-        await this.setStateAsync('general.control.setColorRGB', { val: '255,255,255', ack: true });
+        await this.setStateAsync('general.control.setColorRGB', { val: '50,100,150', ack: true });
+
+        adapter.log.info(this.RGBToHSL('50,100,150'));
+
+        // Object to set color HSL
+        await this.setObjectNotExistsAsync('general.control.setColorHSL_H', {
+            type: 'state',
+            common: {
+                name: 'set Color over HSL',
+                type: 'number',
+                role: 'control.HSL.H',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('general.control.setColorHSL_S', {
+            type: 'state',
+            common: {
+                name: 'set Color over HSL',
+                type: 'number',
+                role: 'control.HSL.S',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+
+        await this.setObjectNotExistsAsync('general.control.setColorHSL_L', {
+            type: 'state',
+            common: {
+                name: 'set Color over HSL',
+                type: 'number',
+                role: 'control.HSL.L',
+                read: true,
+                write: true,
+            },
+            native: {},
+        });
+
+        await this.updateHSLDataPoints(this.RGBToHSL('50,100,150'));
 
         // Object to updateAdapter
         await this.setObjectNotExistsAsync('general.control.updateAdapter', {
@@ -598,6 +639,113 @@ class HyperionNg extends utils.Adapter {
     }
 
     /**
+     * Convert RGB value into HSL value
+     * @param {String}      colorRGB    RGB values of Color
+     */
+    RGBToHSL(colorRGB) {
+
+        var colorArrayString = colorRGB.split(',');
+        var r = parseInt(colorArrayString[0]);
+        var g = parseInt(colorArrayString[1]);
+        var b = parseInt(colorArrayString[2]);
+
+        // Make r, g, and b fractions of 1
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        
+        // Find greatest and smallest channel values
+        let cmin = Math.min(r,g,b),
+            cmax = Math.max(r,g,b),
+            delta = cmax - cmin,
+            h = 0,
+            s = 0,
+            l = 0;
+        // Calculate hue
+        // No difference
+        if (delta == 0)
+        h = 0;
+        // Red is max
+        else if (cmax == r)
+        h = ((g - b) / delta) % 6;
+        // Green is max
+        else if (cmax == g)
+        h = (b - r) / delta + 2;
+        // Blue is max
+        else
+        h = (r - g) / delta + 4;
+
+        h = Math.round(h * 60);
+        
+        // Make negative hues positive behind 360°
+        if (h < 0)
+            h += 360;
+        // Calculate lightness
+        l = (cmax + cmin) / 2;
+
+        // Calculate saturation
+        s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+            
+        // Multiply l and s by 100
+        // s = +(s * 100).toFixed(1);
+        // l = +(l * 100).toFixed(1);
+
+        return h + "," + s + "," + l;
+    }
+
+    /**
+     * Convert HSL value into RGB value
+     * @param {number}      h    H value of HSL
+     * @param {number}      s    S value of HSL
+     * @param {number}      l    L value of HSL
+     */
+    HSLToRGB(h,s,l) {
+
+        let c = (1 - Math.abs(2 * l - 1)) * s,
+            x = c * (1 - Math.abs((h / 60) % 2 - 1)),
+            m = l - c/2,
+            r = 0,
+            g = 0,
+            b = 0;
+
+        if (0 <= h && h < 60) {
+            r = c; g = x; b = 0;  
+        } else if (60 <= h && h < 120) {
+            r = x; g = c; b = 0;
+        } else if (120 <= h && h < 180) {
+            r = 0; g = c; b = x;
+        } else if (180 <= h && h < 240) {
+            r = 0; g = x; b = c;
+        } else if (240 <= h && h < 300) {
+            r = x; g = 0; b = c;
+        } else if (300 <= h && h < 360) {
+            r = c; g = 0; b = x;
+        }
+        r = Math.round((r + m) * 255);
+        g = Math.round((g + m) * 255);
+        b = Math.round((b + m) * 255);
+    
+        return r + "," + g + "," + b;
+            
+    }
+
+    /**
+     * Set HSL Datapoints of Adapter
+     * @param {String}      colorHSL    RGB values of Color
+     */
+    async updateHSLDataPoints(colorHSL)
+    {
+        var colorArrayString = colorHSL.split(',');
+        var h = parseInt(colorArrayString[0]);
+        var s = parseFloat(colorArrayString[1]).toFixed(2);
+        var l = parseFloat(colorArrayString[2]).toFixed(2);
+
+        await this.setStateAsync('general.control.setColorHSL_H', { val: h, ack: true });
+        await this.setStateAsync('general.control.setColorHSL_S', { val: s, ack: true });
+        await this.setStateAsync('general.control.setColorHSL_L', { val: l, ack: true });
+    }
+
+    /**
      * Is called if a subscribed state changes
      * @param {string} id
      * @param {ioBroker.State | null | undefined} state
@@ -694,7 +842,8 @@ class HyperionNg extends utils.Adapter {
                             if (colorDuration == 0) {
                                 hyperion_API.setColorRGB(instance.val, state.val, (err, result) => {
                                     setTimeout(() =>{
-                                    this.setState(id,{ val: '255,255,255', ack: true });
+                                    this.setState(id,{ val: state.val, ack: true });
+                                    this.updateHSLDataPoints(this.RGBToHSL(state.val));
                                     this.readOutPriorities((err, result) => {});
                                     },200);
                                 });
@@ -702,12 +851,27 @@ class HyperionNg extends utils.Adapter {
                             else {
                                 hyperion_API.setColorRGBDuration(instance.val, state.val, colorDuration.val * 1000, (err, result) => {
                                     setTimeout(() =>{
-                                    this.setState(id,{ val: '255,255,255', ack: true });
+                                    this.setState(id,{ val: state.val, ack: true });
+                                    this.updateHSLDataPoints(this.RGBToHSL(state.val));
                                     this.setState(colorDuration,{ val: 0, ack: true });
                                     this.readOutPriorities((err, result) => {});
                                     },200);
                                 });
                             }
+                        });
+                    });
+                }
+
+                // #####################  set Color HSL #####################################
+
+                if (id_arr[3] === 'control' && (id_arr[4] === 'setColorHSL_H'|| id_arr[4] === 'setColorHSL_S'|| id_arr[4] === 'setColorHSL_L')){
+                    this.getState(this.namespace + '.general.control.setColorHSL_H',(err, h) => {
+                        this.getState(this.namespace + '.general.control.setColorHSL_S',(err, s) => {
+                            this.getState(this.namespace + '.general.control.setColorHSL_L',(err, l) => {
+                                var colorRGB = this.HSLToRGB(h.val,s.val,l.val);
+                                this.setState(id,{ val: state.val, ack: true });
+                                this.setState(this.namespace + '.general.control.setColorRGB',{ val: colorRGB, ack: false });
+                            });
                         });
                     });
                 }
