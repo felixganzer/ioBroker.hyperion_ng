@@ -52,7 +52,6 @@ class Hyperion_API
     /**
      * This method parses incoming data, and fires the corresponding callback
      *
-     * @param {string} data			data string
      */
     async connectSocket(callback) {
         
@@ -136,9 +135,9 @@ class Hyperion_API
      * the instance ID. The response of this communication will be trown away.
      *
      * @param {Function} callback	callback function, using (err, result)
-     * @param {integer} instance    hyperion instance number to get informations for the correct one
+     * @param {string}   instance    hyperion instance number to get informations for the correct one
      */
-    async getServerInfo(callback, instance= 0) {
+    async getServerInfo(callback, instance= '0') {
         adapterMain.log.debug('get components of instance ' + instance);
 
         const self = this;
@@ -176,7 +175,7 @@ class Hyperion_API
      *
      * @param {String}      component	name of component to have change
      * @param {boolean}     state	    state of component to have set
-     * @param {integer}     instance    hyperion instance number to get informations for the correct one
+     * @param {String}      instance    hyperion instance number to get informations for the correct one
      * @param {Function}    callback	callback function, using (err, result)
      */
     async setComponentStatus(component, state, instance, callback) {
@@ -207,7 +206,7 @@ class Hyperion_API
      *
      * @param {String}      adjustment	name of component to have change
      * @param {String}      state	    state could be several different types, depents of Adjustment
-     * @param {integer}     instance    hyperion instance number to get informations for the correct one
+     * @param {String}      instance    hyperion instance number to get informations for the correct one
      * @param {Function}    callback	callback function, using (err, result)
      */
     async setAdjustment(adjustment, state, instance, callback) {
