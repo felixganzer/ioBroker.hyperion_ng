@@ -1,31 +1,6 @@
 {
-  "_args": [
-    [
-      "iobroker.hyperion_ng@https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
-      "C:\\iobroker"
-    ]
-  ],
-  "_from": "iobroker.hyperion_ng@https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
-  "_id": "iobroker.hyperion_ng@https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
-  "_inBundle": false,
-  "_integrity": "sha512-xuBIA6ooYXn/5kIUvkCgBfCM7ApLO6oHgcim5xo8LU6pF/vYM9elqAfgps/pT7o/13QkQfJdxwzCT+QF8wShuA==",
-  "_location": "/iobroker.hyperion_ng",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "remote",
-    "raw": "iobroker.hyperion_ng@https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
-    "name": "iobroker.hyperion_ng",
-    "escapedName": "iobroker.hyperion_ng",
-    "rawSpec": "https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
-    "saveSpec": "https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
-    "fetchSpec": "https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88"
-  },
-  "_requiredBy": [
-    "/"
-  ],
-  "_resolved": false,
-  "_spec": "https://github.com/felixganzer/ioBroker.hyperion_ng/tarball/50b2e8e624e063e6a02aa5c545d196a31c7a9a88",
-  "_where": "C:\\iobroker",
+  "name": "iobroker.hyperion_ng",
+  "version": "0.1.13",
   "author": {
     "name": "felixganzer",
     "email": "felixganzer@web.de"
@@ -65,7 +40,6 @@
   ],
   "license": "MIT",
   "main": "main.js",
-  "name": "iobroker.hyperion_ng",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/felixganzer/ioBroker.hyperion_ng.git"
@@ -78,6 +52,5 @@
     "test:js": "mocha --config test/mocharc.custom.json \"{!(node_modules|test)/**/*.test.js,*.test.js,test/**/test!(PackageFiles|Startup).js}\"",
     "test:package": "mocha test/package --exit",
     "test:unit": "mocha test/unit --exit"
-  },
-  "version": "0.1.13"
+  }
 }
