@@ -54,6 +54,7 @@ class Hyperion_API
      *
      */
     clearSocket(){
+        
         if (this.socket) {
             this.socket.destroy(); // kill client after server's response
         }

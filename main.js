@@ -9,7 +9,7 @@
 const utils = require('@iobroker/adapter-core');
 const Hyperion_API = require('./hyperion_API');
 
-var hyperion_API;
+var hyperion_API = null;
 var adapter = null;
 var numberOfInstances = 0;
 
@@ -626,7 +626,7 @@ class HyperionNg extends utils.Adapter {
      */
     onUnload(callback) {
         try {
-            hyperion_API.clearSocket();
+            //hyperion_API.clearSocket();
             
             // Here you must clear all timeouts or intervals that may still be active
             // clearTimeout(timeout1);
