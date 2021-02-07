@@ -626,6 +626,8 @@ class HyperionNg extends utils.Adapter {
      */
     onUnload(callback) {
         try {
+            hyperion_API.clearSocket();
+            
             // Here you must clear all timeouts or intervals that may still be active
             // clearTimeout(timeout1);
             // clearTimeout(timeout2);

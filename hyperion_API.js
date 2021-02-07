@@ -50,6 +50,16 @@ class Hyperion_API
     }
 
     /**
+     * This method clears socket
+     *
+     */
+    clearSocket(){
+        if (this.socket) {
+            this.socket.destroy(); // kill client after server's response
+        }
+    }
+
+    /**
      * This method parses incoming data, and fires the corresponding callback
      *
      */

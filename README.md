@@ -66,6 +66,12 @@ You can manually update the data of the whole adaptor, if you set general.contro
 
 ## Changelog
 
+### 0.1.14 (2021.02.07)
+* (felixganzer) bugfixing: clear socket at adapter unload
+* (felixganzer) bugfixing: change logo
+* (felixganzer) bugfixing: fix testing for github
+* (felixganzer) bugfixing: remove all the "stuff inserted by an npm install"
+
 ### 0.1.13 (2021.02.03)
 * (felixganzer) add set Color over HSL values
 
