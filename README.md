@@ -66,7 +66,7 @@ You can manually update the data of the whole adaptor, if you set general.contro
 
 ## Changelog
 
-### 0.1.15 (2021.02.07)
+### 0.1.16 (2021.02.07)
 * (felixganzer) bugfixing: clear socket at adapter unload
 * (felixganzer) bugfixing: change logo
 * (felixganzer) bugfixing: fix testing for github
