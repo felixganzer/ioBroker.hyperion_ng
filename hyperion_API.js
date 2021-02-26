@@ -83,13 +83,18 @@ class Hyperion_API
 
         this.socket.setEncoding('utf8');
 
+        this.socket.on('error', function(ex) {
+            adapterMain.log.error("handled socket error");
+            adapterMain.log.error(ex);
+          }.bind(this));
+
         this.socket.on('data', function(data) {
             adapterMain.log.debug('data: ' + data);
             this.parseData(data);
         }.bind(this));
 
         this.socket.on('timeout', () => {
-            console.log('socket timeout');
+            adapterMain.log.info('socket timeout');
             if (this.socket) {this.socket.end();};
           });
         
@@ -393,14 +398,21 @@ class Hyperion_API
      * @param {Function}    callback	callback function, using (err, result)
      */
     async setColorRGB(instance, colorRGB, callback) {
-        
+                
         const self = this;
 
         var colorArray = [255,255,255];
         var colorArrayString = colorRGB.split(',');
-        colorArray[0] = parseInt(colorArrayString[0]);
-        colorArray[1] = parseInt(colorArrayString[1]);
-        colorArray[2] = parseInt(colorArrayString[2]);
+
+        try {
+            colorArray[0] = parseInt(colorArrayString[0]);
+            colorArray[1] = parseInt(colorArrayString[1]);
+            colorArray[2] = parseInt(colorArrayString[2]);
+        }catch(err){
+            
+            adapterMain.log.error('RGB color is wrong')
+            colorArray = [255,255,255];
+        }
 
         self.sendMessage({
             command     : "instance",
@@ -433,9 +445,16 @@ class Hyperion_API
 
         var colorArray = [255,255,255];
         var colorArrayString = colorRGB.split(',');
-        colorArray[0] = parseInt(colorArrayString[0]);
-        colorArray[1] = parseInt(colorArrayString[1]);
-        colorArray[2] = parseInt(colorArrayString[2]);
+        
+        try {
+            colorArray[0] = parseInt(colorArrayString[0]);
+            colorArray[1] = parseInt(colorArrayString[1]);
+            colorArray[2] = parseInt(colorArrayString[2]);
+        }catch(err){
+            
+            adapterMain.log.error('RGB color is wrong')
+            colorArray = [255,255,255];
+        }
 
         self.sendMessage({
             command     : "instance",

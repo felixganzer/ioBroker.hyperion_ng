@@ -412,7 +412,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'control instance',
                 type: 'number',
-                role: 'control.state',
+                role: 'state',
                 read: true,
                 write: true,
             },
@@ -426,7 +426,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'clear all priorities',
                 type: 'boolean',
-                role: 'control.state',
+                role: 'state',
                 read: true,
                 write: true,
             },
@@ -440,7 +440,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'clear visible priority',
                 type: 'boolean',
-                role: 'control.state',
+                role: 'state',
                 read: true,
                 write: true,
             },
@@ -454,7 +454,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'set Effect over String',
                 type: 'string',
-                role: 'control.state',
+                role: 'state',
                 read: true,
                 write: true,
             },
@@ -468,7 +468,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'set time of Effect or Color in seconds',
                 type: 'number',
-                role: 'control.state',
+                role: 'level.timer',
                 read: true,
                 write: true,
             },
@@ -482,7 +482,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'set Color over RGB',
                 type: 'string',
-                role: 'control.state',
+                role: 'level.color.rgb',
                 read: true,
                 write: true,
             },
@@ -498,7 +498,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'set Color over HSL',
                 type: 'number',
-                role: 'control.HSL.H',
+                role: 'level.color.hue',
                 read: true,
                 write: true,
             },
@@ -510,7 +510,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'set Color over HSL',
                 type: 'number',
-                role: 'control.HSL.S',
+                role: 'level.color.saturation',
                 read: true,
                 write: true,
             },
@@ -522,7 +522,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'set Color over HSL',
                 type: 'number',
-                role: 'control.HSL.L',
+                role: 'level.color.luminance',
                 read: true,
                 write: true,
             },
@@ -537,7 +537,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'update all Datapoints',
                 type: 'boolean',
-                role: 'control.state',
+                role: 'state',
                 read: true,
                 write: true,
             },
@@ -551,7 +551,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'update all Priorities',
                 type: 'boolean',
-                role: 'control.state',
+                role: 'state',
                 read: true,
                 write: true,
             },
@@ -565,7 +565,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'set Internal Grabber Visible',
                 type: 'boolean',
-                role: 'control.state',
+                role: 'state',
                 read: true,
                 write: true,
             },
@@ -579,7 +579,7 @@ class HyperionNg extends utils.Adapter {
             common: {
                 name: 'set USB Grabber Visible',
                 type: 'boolean',
-                role: 'control.state',
+                role: 'state',
                 read: true,
                 write: true,
             },

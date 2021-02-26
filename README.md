@@ -66,6 +66,11 @@ You can manually update the data of the whole adaptor, if you set general.contro
 
 ## Changelog
 
+### 0.1.17 (2021.02.26)
+* (felixganzer) bugfixing: add error event handler for socket connection
+* (felixganzer) bugfixing: change state roles of control states
+* (felixganzer) bugfixing: add try and catch at set RGB color
+
 ### 0.1.16 (2021.02.07)
 * (felixganzer) bugfixing: clear socket at adapter unload
 * (felixganzer) bugfixing: change logo
