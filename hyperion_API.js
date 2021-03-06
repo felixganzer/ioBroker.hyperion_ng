@@ -17,6 +17,24 @@ class Hyperion_API
 
         this.connected  = false;
         this.databuffer = '';
+        this.communicationTimer = null;
+    }
+
+    /**
+     * This method set an timer for communication delay of Hyperion communication
+     *
+     * @param {number} time			time in milli seconds
+     */
+    setCommunicationTimer(time)
+    {
+        if (this.communicationTimer)
+        { 
+            clearTimeout(this.communicationTimer);
+            adapterMain.log.debug('clear Timer');
+        }
+        
+        this.communicationTimer = setTimeout(()=>{}, time);
+        adapterMain.log.debug('set Timer to ' + time + ' ms');
     }
 
     /**
@@ -168,7 +186,8 @@ class Hyperion_API
                 self.sendMessage({
                     command : 'serverinfo'
                 }, callback);
-            },50) ;
+            },50);
+            self.setCommunicationTimer(50);
         });
     }
 
@@ -213,7 +232,8 @@ class Hyperion_API
                     state           : state
                     }
                 }, callback);
-            },50) ;
+            },50);
+            self.setCommunicationTimer(50);
         });
     }
 
@@ -247,49 +267,49 @@ class Hyperion_API
             self.databuffer = '';
             switch(adjustment){
             case "backlightColored": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { backlightColored      : Boolean(state)}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { backlightColored      : Boolean(state)}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "backlightThreshold": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { backlightThreshold    : parseInt(state)}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { backlightThreshold    : parseInt(state)}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "blue": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { blue                  : colorArray}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { blue                  : colorArray}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "brightness": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { brightness            : parseInt(state)}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { brightness            : parseInt(state)}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "brightnessCompensation": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { brightnessCompensation: parseInt(state)}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { brightnessCompensation: parseInt(state)}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "cyan": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { cyan                  : colorArray}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { cyan                  : colorArray}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "gammaBlue": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { gammaBlue             : parseFloat(state)}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { gammaBlue             : parseFloat(state)}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "gammaGreen": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { gammaGreen            : parseFloat(state)}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { gammaGreen            : parseFloat(state)}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "gammaRed": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { bgammaRed             : parseFloat(state)}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { bgammaRed             : parseFloat(state)}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "green": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { green                 : colorArray}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { green                 : colorArray}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "id": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { id                    : state}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { id                    : state}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "magenta": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { magenta               : colorArray}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { magenta               : colorArray}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "red": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { red                   : colorArray}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { red                   : colorArray}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "white": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { white                 : colorArray}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { white                 : colorArray}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             case "yellow": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { yellow                : colorArray}}, callback);},100) ;
+                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { yellow                : colorArray}}, callback);},100);self.setCommunicationTimer(100);
                 break;
             }
         });
@@ -324,7 +344,8 @@ class Hyperion_API
                     command         : 'clear',
                     priority       : priority
                 }, callback);
-            },50) ;
+            },50);
+            self.setCommunicationTimer(50);
         });
     }
 
@@ -354,7 +375,8 @@ class Hyperion_API
                     priority        : self.priority,
                     origin          : 'ioBroker'
                 }, callback);
-            },50) ;
+            },50);
+            self.setCommunicationTimer(50);
         });
     }
 
@@ -386,7 +408,8 @@ class Hyperion_API
                     priority        : self.priority,
                     origin          : 'ioBroker'
                 }, callback);
-            },50) ;
+            },50);
+            self.setCommunicationTimer(50);
         });
     }
 
@@ -427,7 +450,8 @@ class Hyperion_API
                     priority        : self.priority,
                     origin          : 'ioBroker'
                 }, callback);
-            },50) ;
+            },50);
+            self.setCommunicationTimer(50);
         });
     }
 
@@ -470,7 +494,8 @@ class Hyperion_API
                     priority        : self.priority,
                     origin          : 'ioBroker'
                 }, callback);
-            },50) ;
+            },50);
+            self.setCommunicationTimer(50);
         });
     }
 
@@ -521,7 +546,8 @@ class Hyperion_API
                     command         : 'sourceselect',
                     priority        : priority,
                 }, callback);
-            },50) ;
+            },50);
+            self.setCommunicationTimer(50);
         });
     }
 }
