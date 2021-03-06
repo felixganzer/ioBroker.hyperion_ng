@@ -78,8 +78,8 @@
                 "js-controller": ">=2.0.0"
             }
         ],
-        "supportStopInstance": 3000,
-        "stopTimeout": 3000
+        "supportStopInstance": 500,
+        "stopTimeout": 500
     },
     "native": {
         "address"           : "127.0.0.1",

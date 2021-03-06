@@ -18,6 +18,7 @@ class Hyperion_API
         this.connected  = false;
         this.databuffer = '';
         this.communicationTimer = null;
+        this.communicationTimeOut = 0;
     }
 
     /**
@@ -30,6 +31,7 @@ class Hyperion_API
         if (this.communicationTimer)
         { 
             clearTimeout(this.communicationTimer);
+            this.communicationTimeOut = 0;
             adapterMain.log.debug('clear Timer');
         }
         
@@ -37,6 +39,7 @@ class Hyperion_API
             this.clearCommunicationTimer();
         }, time);
         adapterMain.log.debug('set Timer to ' + time + ' ms');
+        this.communicationTimeOut = time;
     }
 
     /**
@@ -49,8 +52,19 @@ class Hyperion_API
         { 
             clearTimeout(this.communicationTimer);
             this.communicationTimer = null;
+            this.communicationTimeOut = 0;
             adapterMain.log.debug('clear Timer regulary');
         }
+    }
+
+    /**
+     * This method callback the last communication timeout time
+     *
+     */
+    getCommunicationTimeout()
+    {
+        adapterMain.log.debug('get Timer of ' + this.communicationTimeOut + ' ms');
+        return this.communicationTimeOut;
     }
 
     /**

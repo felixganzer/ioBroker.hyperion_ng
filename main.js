@@ -628,15 +628,12 @@ class HyperionNg extends utils.Adapter {
         try {
             if (hyperion_API != null){
                 hyperion_API.clearSocket();
-                hyperion_API.clearCommunicationTimer();
+                
+                setTimeout(function () {
+                    callback();
+                },hyperion_API.getCommunicationTimeout);
             }
             
-            // Here you must clear all timeouts or intervals that may still be active
-            // clearTimeout(timeout1);
-            // clearTimeout(timeout2);
-            // ...
-            // clearInterval(interval1);
-
             callback();
         } catch (e) {
             callback();
