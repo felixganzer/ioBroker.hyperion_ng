@@ -33,8 +33,24 @@ class Hyperion_API
             adapterMain.log.debug('clear Timer');
         }
         
-        this.communicationTimer = setTimeout(()=>{}, time);
+        this.communicationTimer = setTimeout(()=>{
+            this.clearCommunicationTimer();
+        }, time);
         adapterMain.log.debug('set Timer to ' + time + ' ms');
+    }
+
+    /**
+     * This method clear communication Timer for shutDown
+     *
+     */
+    clearCommunicationTimer()
+    {
+        if (this.communicationTimer)
+        { 
+            clearTimeout(this.communicationTimer);
+            this.communicationTimer = null;
+            adapterMain.log.debug('clear Timer regulary');
+        }
     }
 
     /**
