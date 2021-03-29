@@ -630,11 +630,12 @@ class HyperionNg extends utils.Adapter {
                 hyperion_API.clearSocket();
                 
                 setTimeout(function () {
-                    callback();
-                },hyperion_API.getCommunicationTimeout);
+                    return callback();
+                },hyperion_API.getCommunicationTimeout());
             }
-            
-            callback();
+            else{
+                return callback();
+            }
         } catch (e) {
             callback();
         }

@@ -1,7 +1,7 @@
 {
     "common": {
         "name": "hyperion_ng",
-        "version": "0.1.18",
+        "version": "0.1.19",
         "news": {
             "0.1.17": {
                 "en": "first version which will be released at iobroker",

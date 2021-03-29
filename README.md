@@ -66,6 +66,9 @@ You can manually update the data of the whole adaptor, if you set general.contro
 
 ## Changelog
 
+### 0.1.19 (2021.03.29)
+* (felixganzer) little bugfixing
+
 ### 0.1.18 (2021.03.06)
 * (felixganzer) increase stopTimeout to 3 seconds
 * (felixganzer) add communicationTimer object
