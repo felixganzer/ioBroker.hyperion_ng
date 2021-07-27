@@ -816,7 +816,7 @@ class HyperionNg extends utils.Adapter {
                 if (id_arr[3] === 'control' && id_arr[4] === 'setEffect') {
                     this.getState(this.namespace + '.general.control.instance',(err, instance) => {
                         this.getState(this.namespace + '.general.control.durationEffectColor',(err, effectDuration) => {
-                            if (effectDuration == 0) {
+                            if (effectDuration.val == 0) {
                                 hyperion_API.setEffect(instance.val, state.val, (err, result) => {
                                     setTimeout(() =>{
                                     this.setState(id,{ val: '', ack: true });
@@ -842,7 +842,7 @@ class HyperionNg extends utils.Adapter {
                 if (id_arr[3] === 'control' && id_arr[4] === 'setColorRGB') {
                     this.getState(this.namespace + '.general.control.instance',(err, instance) => {
                         this.getState(this.namespace + '.general.control.durationEffectColor',(err, colorDuration) => {
-                            if (colorDuration == 0) {
+                            if (colorDuration.val == 0) {
                                 hyperion_API.setColorRGB(instance.val, state.val, (err, result) => {
                                     setTimeout(() =>{
                                     this.setState(id,{ val: state.val, ack: true });

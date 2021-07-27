@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "hyperion_ng",
-        "version": "0.1.19",
+        "version": "0.1.20",
         "news": {
+            "0.1.20": {
+                "en": "bugfixing of setting color and effect",
+                "de": "Fehlerbehebung beim setzen von Colors und Effecten",
+            },
             "0.1.17": {
                 "en": "first version which will be released at iobroker",
                 "de": "erste Version, die bei iobroker veröffentlicht wird",
