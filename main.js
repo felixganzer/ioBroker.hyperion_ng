@@ -113,7 +113,7 @@ class HyperionNg extends utils.Adapter {
             
                     my_effects_ID++;
                     var my_effects_ID_string = ("00000" + my_effects_ID).slice(-2);
-                    var my_effects_Name =  my_effects_ID_string + '-' + my_effects[effects].name;
+                    var my_effects_Name =  my_effects_ID_string + '-' + JSON.stringify(my_effects[effects].name);
 
                     myobj = {type: 'folder', common: {name: my_effects_Name}, native:{id: 'effects'+ my_effects_ID + my_effects_Name}};
                     await adapter.setObjectNotExistsAsync('general.effects' + '.' + my_effects_Name, myobj);
@@ -123,7 +123,7 @@ class HyperionNg extends utils.Adapter {
 
                     // fill priority with parameter
                     for (var entry in object_array){
-                        var entry_Name = entry;
+                        var entry_Name = JSON.stringify(entry);
                         var entry_val = object_array[entry];
 
                         myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
@@ -257,7 +257,7 @@ class HyperionNg extends utils.Adapter {
                 for (var instance in my_instances){
                 
                     var my_instance_ID = instance;
-                    var my_instance_Name = my_instances[instance].friendly_name;
+                    var my_instance_Name = JSON.stringify(my_instances[instance].friendly_name);
                     var my_instance_running = my_instances[instance].running;
 
                     var myobj = {type: 'folder',common: {name: my_instance_Name}, native:{id: my_instance_Name}};
@@ -295,7 +295,7 @@ class HyperionNg extends utils.Adapter {
                 for (var component in my_components){
                 
                     var my_component_Name   = JSON.stringify(my_components[component].name);
-                    var my_component_status = JSON.stringify(my_components[component].enabled);
+                    var my_component_status = my_components[component].enabled;
 
                     var myobj ={
                         type: 'folder',
