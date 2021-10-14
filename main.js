@@ -113,7 +113,7 @@ class HyperionNg extends utils.Adapter {
 
                     my_effects_ID++;
                     const my_effects_ID_string = ('00000' + my_effects_ID).slice(-2);
-                    const my_effects_Name =  my_effects_ID_string + '-' + JSON.stringify(my_effects[effects].name);
+                    const my_effects_Name =  my_effects_ID_string + '-' + my_effects[effects].name;
 
                     myobj = {type: 'folder', common: {name: my_effects_Name}, native:{id: 'effects'+ my_effects_ID + my_effects_Name}};
                     await adapter.setObjectNotExistsAsync('general.effects' + '.' + my_effects_Name, myobj);
