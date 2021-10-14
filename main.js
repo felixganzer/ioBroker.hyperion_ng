@@ -294,8 +294,8 @@ class HyperionNg extends utils.Adapter {
                 var my_components = result.info.components;
                 for (var component in my_components){
                 
-                    var my_component_Name   = my_components[component].name;
-                    var my_component_status = my_components[component].enabled;
+                    var my_component_Name   = JSON.stringify(my_components[component].name);
+                    var my_component_status = JSON.stringify(my_components[component].enabled);
 
                     var myobj ={
                         type: 'folder',
@@ -315,14 +315,14 @@ class HyperionNg extends utils.Adapter {
                 }
 
                 // read out video mode
-                var my_videoMode = result.info.videomode;
+                var my_videoMode = JSON.stringify(result.info.videomode);
                 myobj = {type: 'state', common: {role: 'video mode', type: 'string', name: 'video mode'}, native:{id: instance + 'video mode'}};
 
                 await adapter.setObjectNotExistsAsync(instance + '.' + 'video mode', myobj);
                 await adapter.setStateAsync(instance + '.' + 'video mode', my_videoMode, true);
 
                 // read out LED Mapping
-                var my_imageToLedMappingType = result.info.imageToLedMappingType;
+                var my_imageToLedMappingType = JSON.stringify(result.info.imageToLedMappingType);
                 myobj = {type: 'state', common: {role: 'imageToLedMappingType', type: 'string', name: 'imageToLedMappingType'}, native:{id: instance + 'imageToLedMappingType'}};
 
                 await adapter.setObjectNotExistsAsync(instance + '.' + 'imageToLedMappingType', myobj);
@@ -375,7 +375,7 @@ class HyperionNg extends utils.Adapter {
 
                 // fill priority with parameter
                 for (var entry in object_array){
-                    var entry_Name = entry;
+                    var entry_Name = JSON.stringify(entry);
                     var entry_val = object_array[entry];
 
                     myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
