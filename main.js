@@ -160,7 +160,7 @@ class HyperionNg extends utils.Adapter {
 
             setTimeout(function () {
                 return callback();
-            },this.config['communicationDelay']);
+            },self.config['communicationDelay']);
         });
     }
     
