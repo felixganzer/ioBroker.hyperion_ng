@@ -858,7 +858,7 @@ class HyperionNg extends utils.Adapter {
                                     this.updateHSLDataPoints(this.RGBToHSL(state.val));
                                     this.setState(colorDuration,{ val: 0, ack: true });
                                     this.readOutPriorities((err, result) => {});
-                                    },2this.config['communicationDelay']);
+                                    },this.config['communicationDelay']);
                                 });
                             }
                         });
