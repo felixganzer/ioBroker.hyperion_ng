@@ -160,7 +160,7 @@ class HyperionNg extends utils.Adapter {
 
             setTimeout(function () {
                 return callback();
-            },100);
+            },this.config['communicationDelay']);
         });
     }
     
@@ -821,7 +821,7 @@ class HyperionNg extends utils.Adapter {
                                     setTimeout(() =>{
                                     this.setState(id,{ val: '', ack: true });
                                     this.readOutPriorities((err, result) => {});
-                                    },200);
+                                    },this.config['communicationDelay']);
                                 });
                             }
                             else {
@@ -830,7 +830,7 @@ class HyperionNg extends utils.Adapter {
                                     this.setState(id,{ val: '', ack: true });
                                     this.setState(effectDuration,{ val: 0, ack: true });
                                     this.readOutPriorities((err, result) => {});
-                                    },200);
+                                    },this.config['communicationDelay']);
                                 });
                             }
                         });
@@ -848,7 +848,7 @@ class HyperionNg extends utils.Adapter {
                                     this.setState(id,{ val: state.val, ack: true });
                                     this.updateHSLDataPoints(this.RGBToHSL(state.val));
                                     this.readOutPriorities((err, result) => {});
-                                    },200);
+                                    },this.config['communicationDelay']);
                                 });
                             }
                             else {
@@ -858,7 +858,7 @@ class HyperionNg extends utils.Adapter {
                                     this.updateHSLDataPoints(this.RGBToHSL(state.val));
                                     this.setState(colorDuration,{ val: 0, ack: true });
                                     this.readOutPriorities((err, result) => {});
-                                    },200);
+                                    },2this.config['communicationDelay']);
                                 });
                             }
                         });

@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "hyperion_ng",
-        "version": "0.1.21",
+        "version": "0.1.22",
         "news": {
+            "0.1.22": {
+                "en": "add support for HyperHDR and add config to change communicationDelay",
+                "de": "HyperHDR wird jetzt unterstützt. Ein Configeintrag für den Communication Delay wurde hinzugefügt."
+            },
             "0.1.21": {
                 "en": "bugfixing of setting color and effect",
                 "de": "Fehlerbehebung beim setzen von Colors und Effecten"
@@ -90,6 +94,7 @@
         "json_port"         : 19444,
         "prio"              : 50,
         "connectionTimeout" : 1,
+        "communicationDelay" : 50,
         "prioInternalGrabber": 250,
         "prioUSBGrabber"    : 240
 
