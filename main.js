@@ -124,7 +124,13 @@ class HyperionNg extends utils.Adapter {
                     // fill priority with parameter
                     for (const entry in object_array){
                         const entry_Name = JSON.stringify(entry);
-                        const entry_val = JSON.stringify(object_array[entry]);
+                        let entry_val = object_array[entry];
+
+                        const Type = require('type-of-is');
+
+                        if (Type.is(object_array[entry], String)) {
+                            entry_val = JSON.stringify(object_array[entry]);
+                        }
 
                         myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
                         await adapter.setObjectNotExistsAsync(object_path + '.' + entry_Name, myobj);

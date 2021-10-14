@@ -208,8 +208,8 @@ class Hyperion_API
         const self = this;
 
         self.sendMessage({
-            command     : "instance",
-            subcommand  : "switchTo",
+            command     : 'instance',
+            subcommand  : 'switchTo',
             instance    : parseInt(instance)
         },function(){
             self.databuffer = '';
@@ -232,8 +232,8 @@ class Hyperion_API
         adapterMain.log.debug('get System Information');
 
         this.sendMessage({
-                    command : 'sysinfo'
-                }, callback);
+            command : 'sysinfo'
+        }, callback);
     }
 
     /**
@@ -250,8 +250,8 @@ class Hyperion_API
         const self = this;
 
         self.sendMessage({
-            command     : "instance",
-            subcommand  : "switchTo",
+            command     : 'instance',
+            subcommand  : 'switchTo',
             instance    : parseInt(instance)
         },function(){
             self.databuffer = '';
@@ -259,8 +259,8 @@ class Hyperion_API
                 self.sendMessage({
                     command         : 'componentstate',
                     componentstate  : {
-                    component       : component,
-                    state           : state
+                        component       : component,
+                        state           : state
                     }
                 }, callback);
             },self.communicationDelay);
@@ -279,69 +279,69 @@ class Hyperion_API
     async setAdjustment(adjustment, state, instance, callback) {
         adapterMain.log.info('set Adjustment ' + adjustment + ' of instance ' + instance + ' to ' + state);
 
-        var Type = require('type-of-is');
+        const Type = require('type-of-is');
         const self = this;
 
         if (Type.is(state, String)) {
             var colorArray = [255,255,255];
-            var colorArrayString = state.split(',');
+            const colorArrayString = state.split(',');
             colorArray[0] = parseInt(colorArrayString[0]);
             colorArray[1] = parseInt(colorArrayString[1]);
             colorArray[2] = parseInt(colorArrayString[2]);
         }
 
         self.sendMessage({
-            command     : "instance",
-            subcommand  : "switchTo",
+            command     : 'instance',
+            subcommand  : 'switchTo',
             instance    : parseInt(instance)
         },function(){
             self.databuffer = '';
             switch(adjustment){
-            case "backlightColored": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { backlightColored      : Boolean(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "backlightThreshold": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { backlightThreshold    : parseInt(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "blue": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { blue                  : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "brightness": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { brightness            : parseInt(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "brightnessCompensation": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { brightnessCompensation: parseInt(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "cyan": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { cyan                  : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "gammaBlue": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { gammaBlue             : parseFloat(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "gammaGreen": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { gammaGreen            : parseFloat(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "gammaRed": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { bgammaRed             : parseFloat(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "green": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { green                 : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "id": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { id                    : state}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "magenta": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { magenta               : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "red": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { red                   : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "white": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { white                 : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
-            case "yellow": 
-                setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { yellow                : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
-                break;
+                case 'backlightColored':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { backlightColored      : Boolean(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'backlightThreshold':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { backlightThreshold    : parseInt(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'blue':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { blue                  : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'brightness':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { brightness            : parseInt(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'brightnessCompensation':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { brightnessCompensation: parseInt(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'cyan':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { cyan                  : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'gammaBlue':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { gammaBlue             : parseFloat(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'gammaGreen':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { gammaGreen            : parseFloat(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'gammaRed':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { bgammaRed             : parseFloat(state)}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'green':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { green                 : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'id':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { id                    : state}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'magenta':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { magenta               : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'red':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { red                   : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'white':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { white                 : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
+                case 'yellow':
+                    setTimeout(function () {self.sendMessage({ command : 'adjustment', adjustment : { yellow                : colorArray}}, callback);},self.communicationDelay);self.setCommunicationTimer(self.communicationDelay);
+                    break;
             }
         });
     }
@@ -350,12 +350,12 @@ class Hyperion_API
      * Get server information, if you use more than one LED-Hardware instance it is necessary to set at first
      * the instance ID. The response of this communication will be trown away.
      *
-     * @param {number}      priority    
+     * @param {number}      priority
      * @param {number}      instance    hyperion instance number to get informations for the correct one
      * @param {Function}    callback	callback function, using (err, result)
      */
     async clearPriority(priority, instance, callback) {
-        
+
         if (priority == -1 ){
             adapterMain.log.info('clear all priorities of instance ' + instance);
         }else {
@@ -365,8 +365,8 @@ class Hyperion_API
         const self = this;
 
         self.sendMessage({
-            command     : "instance",
-            subcommand  : "switchTo",
+            command     : 'instance',
+            subcommand  : 'switchTo',
             instance    : instance
         },function(){
             self.databuffer = '';
@@ -382,18 +382,18 @@ class Hyperion_API
 
     /**
      * Set Effect over effect Name. It will be used the priority of the adapter
-     *  
+     *
      * @param {number}      instance        hyperion instance number to get informations for the correct one
      * @param {String}      effectName      name of effect which will be set
      * @param {Function}    callback	    callback function, using (err, result)
      */
     async setEffect(instance, effectName, callback) {
-        
+
         const self = this;
 
         self.sendMessage({
-            command     : "instance",
-            subcommand  : "switchTo",
+            command     : 'instance',
+            subcommand  : 'switchTo',
             instance    : instance
         },function(){
             self.databuffer = '';
@@ -413,19 +413,19 @@ class Hyperion_API
 
     /**
      * Set Effect over effect Name. It will be used the priority of the adapter
-     *  
+     *
      * @param {number}      instance        hyperion instance number to get informations for the correct one
      * @param {String}      effectName      name of effect which will be set
      * @param {number}      effectDuration  time of effect duration in ms
      * @param {Function}    callback	    callback function, using (err, result)
      */
     async setEffectDuration(instance, effectName, effectDuration, callback) {
-        
+
         const self = this;
 
         self.sendMessage({
-            command     : "instance",
-            subcommand  : "switchTo",
+            command     : 'instance',
+            subcommand  : 'switchTo',
             instance    : instance
         },function(){
             self.databuffer = '';
@@ -446,7 +446,7 @@ class Hyperion_API
 
     /**
      * Set Color over RGB seperated with comma. It will be used the priority of the adapter
-     *  
+     *
      * @param {number}      instance    hyperion instance number to get informations for the correct one
      * @param {String}      colorRGB    RGB values of Color
      * @param {Function}    callback	callback function, using (err, result)
@@ -495,25 +495,25 @@ class Hyperion_API
      * @param {Function}    callback	    callback function, using (err, result)
      */
     async setColorRGBDuration(instance, colorRGB, colorDuration, callback) {
-        
+
         const self = this;
 
-        var colorArray = [255,255,255];
-        var colorArrayString = colorRGB.split(',');
-        
+        let colorArray = [255,255,255];
+        const colorArrayString = colorRGB.split(',');
+
         try {
             colorArray[0] = parseInt(colorArrayString[0]);
             colorArray[1] = parseInt(colorArrayString[1]);
             colorArray[2] = parseInt(colorArrayString[2]);
         }catch(err){
-            
-            adapterMain.log.error('RGB color is wrong')
+
+            adapterMain.log.error('RGB color is wrong');
             colorArray = [255,255,255];
         }
 
         self.sendMessage({
-            command     : "instance",
-            subcommand  : "switchTo",
+            command     : 'instance',
+            subcommand  : 'switchTo',
             instance    : instance
         },function(){
             self.databuffer = '';
@@ -532,25 +532,25 @@ class Hyperion_API
 
     /**
      * Start and Stop Instance
-     *  
+     *
      * @param {String}      instance    hyperion instance number to get informations for the correct one
      * @param {Boolean}     state       activate and deactivate Instance
      * @param {Function}    callback	callback function, using (err, result)
      */
     async startStopInstance(state, instance, callback) {
-        
+
         if(state) {
             this.databuffer = '';
             this.sendMessage({
-                command     : "instance",
-                subcommand  : "startInstance",
+                command     : 'instance',
+                subcommand  : 'startInstance',
                 instance    : parseInt(instance)
             },callback);
         }else {
             this.databuffer = '';
             this.sendMessage({
-                command     : "instance",
-                subcommand  : "stopInstance",
+                command     : 'instance',
+                subcommand  : 'stopInstance',
                 instance    : parseInt(instance)
             },callback);
         }
@@ -558,17 +558,17 @@ class Hyperion_API
 
     /**
      * Set Grabber as visible Priority. At Standard the Priority will be 250
-     * @param {number}      priority  
+     * @param {number}      priority
      * @param {number}      instance        hyperion instance number to get informations for the correct one
      * @param {Function}    callback	    callback function, using (err, result)
      */
     async setGrabberVisible(priority, instance, callback) {
-        
+
         const self = this;
 
         self.sendMessage({
-            command     : "instance",
-            subcommand  : "switchTo",
+            command     : 'instance',
+            subcommand  : 'switchTo',
             instance    : instance
         },function(){
             self.databuffer = '';
