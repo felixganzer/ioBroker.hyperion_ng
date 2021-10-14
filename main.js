@@ -594,13 +594,13 @@ class HyperionNg extends utils.Adapter {
      */
     async onReady() {
 
-        hyperion_API = new Hyperion_API.Hyperion_API(this, this.config['address'], this.config['json_port'], this.config['prio'], this.config['connectionTimeout']);
+        hyperion_API = new Hyperion_API.Hyperion_API(this, this.config['address'], this.config['json_port'], this.config['prio'], this.config['connectionTimeout'], this.config['communicationDelay']);
 
         await this.createControlParameter();
 
         this.readOutSystemInformations( () => {
 
-            if(this.hyperionVersion.substr(0,1) != "2") {
+            if(this.hyperionVersion.substr(0,1) != "2" || parseInt(this.hyperionVersion.substr(0,2)) >= 16) {
                 this.log.error("Your Version of hyperion (" + this.hyperionVersion + ') is not supported!!');
                 return;
             }
