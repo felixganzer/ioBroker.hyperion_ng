@@ -100,37 +100,37 @@ class HyperionNg extends utils.Adapter {
             if( err == null && result.command == 'serverinfo') {
 
                 // create priority folder at instance
-                var my_effects       = result.info.effects;
-                var my_effects_ID    = -1;
+                const my_effects       = result.info.effects;
+                let my_effects_ID    = -1;
 
-                var myobj = {type: 'folder',common: {name: 'effects'}, native:{id: 'effects'}};
+                let myobj = {type: 'folder',common: {name: 'effects'}, native:{id: 'effects'}};
                 await adapter.setObjectNotExistsAsync('general.effects', myobj);
-                
+
                 adapter.log.info('create effects');
 
                 // create priority at priority folder
-                for (var effects in my_effects){
-            
+                for (const effects in my_effects){
+
                     my_effects_ID++;
-                    var my_effects_ID_string = ("00000" + my_effects_ID).slice(-2);
-                    var my_effects_Name =  my_effects_ID_string + '-' + JSON.stringify(my_effects[effects].name);
+                    const my_effects_ID_string = ('00000' + my_effects_ID).slice(-2);
+                    const my_effects_Name =  my_effects_ID_string + '-' + JSON.stringify(my_effects[effects].name);
 
                     myobj = {type: 'folder', common: {name: my_effects_Name}, native:{id: 'effects'+ my_effects_ID + my_effects_Name}};
                     await adapter.setObjectNotExistsAsync('general.effects' + '.' + my_effects_Name, myobj);
 
-                    var object_array = my_effects[effects].args;
-                    var object_path = 'general.effects' + '.' + my_effects_Name;
+                    const object_array = my_effects[effects].args;
+                    const object_path = 'general.effects' + '.' + my_effects_Name;
 
                     // fill priority with parameter
-                    for (var entry in object_array){
-                        var entry_Name = JSON.stringify(entry);
-                        var entry_val = object_array[entry];
+                    for (const entry in object_array){
+                        const entry_Name = JSON.stringify(entry);
+                        const entry_val = object_array[entry];
 
                         myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
                         await adapter.setObjectNotExistsAsync(object_path + '.' + entry_Name, myobj);
                         await adapter.setStateAsync(object_path + '.' + entry_Name, entry_val, true);
                     }
-                } 
+                }
             }
             else {
                 adapter.log.error('Error at read out SystemInformations');
