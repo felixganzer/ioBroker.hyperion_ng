@@ -328,14 +328,14 @@ class HyperionNg extends utils.Adapter {
                 }
 
                 // read out video mode
-                var my_videoMode = JSON.stringify(result.info.videomode);
+                const my_videoMode = JSON.stringify(result.info.videomode);
                 myobj = {type: 'state', common: {role: 'video mode', type: 'string', name: 'video mode'}, native:{id: instance + 'video mode'}};
 
                 await adapter.setObjectNotExistsAsync(instance + '.' + 'video mode', myobj);
                 await adapter.setStateAsync(instance + '.' + 'video mode', my_videoMode, true);
 
                 // read out LED Mapping
-                var my_imageToLedMappingType = JSON.stringify(result.info.imageToLedMappingType);
+                const my_imageToLedMappingType = JSON.stringify(result.info.imageToLedMappingType);
                 myobj = {type: 'state', common: {role: 'imageToLedMappingType', type: 'string', name: 'imageToLedMappingType'}, native:{id: instance + 'imageToLedMappingType'}};
 
                 await adapter.setObjectNotExistsAsync(instance + '.' + 'imageToLedMappingType', myobj);
@@ -759,9 +759,9 @@ class HyperionNg extends utils.Adapter {
     async updateHSLDataPoints(colorHSL)
     {
         const colorArrayString = colorHSL.split(',');
-        const h = parseInt(colorArrayString[0]);
-        const s = parseFloat(colorArrayString[1]).toFixed(2);
-        const l = parseFloat(colorArrayString[2]).toFixed(2);
+        const h = Number(colorArrayString[0]);
+        const s = Number(parseFloat(colorArrayString[1]).toFixed(2));
+        const l = Number(parseFloat(colorArrayString[2]).toFixed(2));
 
         await this.setStateAsync('general.control.setColorHSL_H', { val: h, ack: true });
         await this.setStateAsync('general.control.setColorHSL_S', { val: s, ack: true });
