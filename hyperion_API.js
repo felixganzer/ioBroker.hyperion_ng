@@ -30,12 +30,12 @@ class Hyperion_API
     setCommunicationTimer(time)
     {
         if (this.communicationTimer)
-        { 
+        {
             clearTimeout(this.communicationTimer);
             this.communicationTimeOut = 0;
             adapterMain.log.debug('clear Timer');
         }
-        
+
         this.communicationTimer = setTimeout(()=>{
             this.clearCommunicationTimer();
         }, time);
@@ -76,25 +76,25 @@ class Hyperion_API
     parseData(data){
         this.databuffer += data;
         adapterMain.log.debug('databuffer: ' + this.databuffer);
-        if( this.databuffer.indexOf("\n") > -1 ) {
-            this.databuffer.split("\n").forEach(function(response, i){
+        if( this.databuffer.indexOf('\n') > -1 ) {
+            this.databuffer.split('\n').forEach(function(response, i){
                 adapterMain.log.debug('response string: ' + response);
 
                 // not sure why this happens, dual \n
                 if( response.length == 0 ) return;
-                
+
                 try {
                     response = [ null, JSON.parse(response) ];
                 } catch(e){
                     response = [ e, null ];
                 }
-                            
-                var callbackFn = callbackFns.shift();
+
+                const callbackFn = callbackFns.shift();
                 if( typeof callbackFn == 'function' ) {
                     adapterMain.log.debug('response JSON: ' + JSON.stringify(response));
                     callbackFn.apply(null, response);
                 }
-            }.bind(this));   
+            }.bind(this));
         }
     }
 
@@ -103,7 +103,7 @@ class Hyperion_API
      *
      */
     clearSocket(){
-        
+
         if (this.socket) {
             this.socket.destroy(); // kill client after server's response
         }
@@ -114,7 +114,7 @@ class Hyperion_API
      *
      */
     async connectSocket(callback) {
-        
+
         const self = this;
 
         if (this.socket && !this.connected) {
@@ -133,20 +133,20 @@ class Hyperion_API
         this.socket.setEncoding('utf8');
 
         this.socket.on('error', function(ex) {
-            adapterMain.log.error("handled socket error");
+            adapterMain.log.error('handled socket error');
             adapterMain.log.error(ex);
-          }.bind(this));
+        }.bind(this));
 
         this.socket.on('data', function(data) {
             adapterMain.log.debug('data: ' + data);
-            this.parseData(data);
+            self.parseData(data);
         }.bind(this));
 
         this.socket.on('timeout', () => {
             adapterMain.log.info('socket timeout');
-            if (this.socket) {this.socket.end();};
-          });
-        
+            if (this.socket) {this.socket.end();}
+        });
+
         this.socket.on('close', function() {
             adapterMain.log.info('Connection closed');
             this.connected = false;
@@ -161,7 +161,7 @@ class Hyperion_API
     async checkConnection(callback) {
 
         if (this.connected == false) {
-            
+
             await this.connectSocket(function(){});
             adapterMain.log.debug('socket reconnected');
 
@@ -186,15 +186,15 @@ class Hyperion_API
             if (this.socket.writable){
 
                 message = JSON.stringify(message);
-                this.socket.write(message + "\n");
+                this.socket.write(message + '\n');
                 adapterMain.log.debug('message sent: ' + message);
                 callbackFns.push(callback);
             } else {
-                callback( new Error("not connected"), null );
+                callback( new Error('not connected'), null );
             }
         }
     }
-    
+
     /**
      * Get server information, if you use more than one LED-Hardware instance it is necessary to set at first
      * the instance ID. The response of this communication will be trown away.
@@ -488,7 +488,7 @@ class Hyperion_API
 
     /**
      * Set Color over RGB seperated with comma. It will be used the priority of the adapter
-     *  
+     *
      * @param {number}      instance        hyperion instance number to get informations for the correct one
      * @param {String}      colorRGB        RGB values of Color
      * @param {number}      colorDuration   time of effect duration in ms

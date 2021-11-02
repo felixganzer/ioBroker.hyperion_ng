@@ -130,6 +130,9 @@ class HyperionNg extends utils.Adapter {
                             case 'string':
                                 entry_val = JSON.stringify(object_array[entry]);
                                 break;
+                            case 'object':
+                                entry_val = JSON.stringify(object_array[entry]);
+                                break;
                             case 'boolean':
                                 entry_val = Boolean(object_array[entry]);
                                 break;
@@ -154,18 +157,17 @@ class HyperionNg extends utils.Adapter {
      * support function for cleaning iobroker objects
      * @param {String}      objectPath search string for iobroker object ID
      * @param {() => void}  callback
-     * 
      */
     deleteObjects(objectPath, callback){
-        
+
         const self = this;
         // delete priorities of instance
 
         adapter.getStates(objectPath, function (err, obj_array) {
-                    
-            for (var obj in obj_array)  { 
-            self.log.debug("Delete: " + JSON.stringify(obj));
-            self.delObjectAsync(obj);
+
+            for (const obj in obj_array)  {
+                self.log.debug('Delete: ' + JSON.stringify(obj));
+                self.delObjectAsync(obj);
             }
 
             setTimeout(function () {
@@ -173,8 +175,8 @@ class HyperionNg extends utils.Adapter {
             },self.config['communicationDelay']);
         });
     }
-    
-    
+
+
     /**
      * read out priorities (Quellenauswahl) of each instance and push information to iobroker
      * @param {() => void}  callback
@@ -183,27 +185,27 @@ class HyperionNg extends utils.Adapter {
     readOutPriorities(callback, instance = 0) {
 
         const self = this;
-        
+
         hyperion_API.getServerInfo(function(err, result){
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
 
                 self.deleteObjects('hyperion_ng.0.' + instance + '.priorities*',async function(err, result2){ 
-                            
-                    // create priority folder at instance
-                    var my_priorities       = result.info.priorities;
-                    var my_priorities_ID    = -1;
 
-                    var myobj = {type: 'folder',common: {name: 'priorities'}, native:{id: instance + 'priorities'}};
+                    // create priority folder at instance
+                    const my_priorities       = result.info.priorities;
+                    let my_priorities_ID    = -1;
+
+                    let myobj = {type: 'folder',common: {name: 'priorities'}, native:{id: instance + 'priorities'}};
                     await adapter.setObjectNotExistsAsync(instance + '.' + 'priorities', myobj);
-                    
+
                     adapter.log.info('create priorities');
 
                     // create priority at priority folder
-                    for (var priorities in my_priorities){
-                
+                    for (const priorities in my_priorities){
+
                         my_priorities_ID++;
-                        var my_priorities_Name =  my_priorities_ID + '-' + my_priorities[priorities].componentId;
+                        const my_priorities_Name =  my_priorities_ID + '-' + my_priorities[priorities].componentId;
 
                         myobj = {type: 'folder',common: {name: my_priorities_Name}, native:{id: instance + 'priorities'+ my_priorities_ID + my_priorities_Name}};
                         await adapter.setObjectNotExistsAsync(instance + '.' + 'priorities' + '.' + my_priorities_Name, myobj);
@@ -232,17 +234,17 @@ class HyperionNg extends utils.Adapter {
                             }
 
                         }
-                    } 
+                    }
 
                     instance++;
 
                     if (instance >= numberOfInstances) {
-                        adapter.log.info("read out priorities finished");
-                    return callback();
+                        adapter.log.info('read out priorities finished');
+                        return callback();
                     }
-        
+
                     self.readOutPriorities(callback, instance);
-                },);   
+                },);
             }
             else {
                 adapter.log.error('Error at read out priorities');
@@ -301,20 +303,21 @@ class HyperionNg extends utils.Adapter {
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
 
+                let myobj;
                 var my_components = result.info.components;
                 for (var component in my_components){
-                
+
                     var my_component_Name   = JSON.stringify(my_components[component].name);
                     var my_component_status = my_components[component].enabled;
 
-                    var myobj ={
+                    myobj ={
                         type: 'folder',
                         common: {
                             name: 'components',
                             role: 'component paramter',
                         },
                         native: {id: 'components'},
-                    }
+                    };
 
                     await adapter.setObjectNotExistsAsync(instance + '.' + 'components', myobj);
 
@@ -345,8 +348,8 @@ class HyperionNg extends utils.Adapter {
             }
 
             if (instance >= numberOfInstances) {
-                adapter.log.info("read out components finished");
-            return callback();
+                adapter.log.info('read out components finished');
+                return callback();
             }
 
             self.readOutComponents(callback, instance);
@@ -354,11 +357,12 @@ class HyperionNg extends utils.Adapter {
         }, instance);
     }
 
-     /**
-     * read out compontent states of the instances
-     * @param {() => void} callback
-     * @param {Integer}     instance integer of instance, which will be used. If not set, it will be 0 as default
-     */
+    /**
+    * read out compontent states of the instances
+    * @param {() => void} callback
+    * @param {Integer}     instance integer of instance, which will be used. If not set, it will be 0 as default
+    */
+
     async readOutAdjustments(callback, instance = 0) {
 
         const self = this;
@@ -366,15 +370,15 @@ class HyperionNg extends utils.Adapter {
         hyperion_API.getServerInfo(async function(err, result){
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
-                
-                var myobj ={
+
+                let myobj ={
                     type: 'folder',
                     common: {
                         name: 'adjustments',
                         role: 'adjustment paramter',
                     },
                     native: {id: 'adjustments'},
-                }
+                };
 
                 await adapter.setObjectNotExistsAsync(instance + '.' + 'adjustments', myobj);
 
@@ -400,8 +404,8 @@ class HyperionNg extends utils.Adapter {
             }
 
             if (instance >= numberOfInstances) {
-                adapter.log.info("read out Adjustments finished");
-            return callback();
+                adapter.log.info('read out Adjustments finished');
+                return callback();
             }
 
             self.readOutAdjustments(callback, instance);
@@ -414,7 +418,7 @@ class HyperionNg extends utils.Adapter {
      */
     async createControlParameter() {
 
-        this.log.info("create Control Parameter");
+        this.log.info('create Control Parameter');
 
         // Object to set the instance for the control area
         await this.setObjectNotExistsAsync('general.control.instance', {
@@ -610,8 +614,8 @@ class HyperionNg extends utils.Adapter {
 
         this.readOutSystemInformations( () => {
 
-            if(this.hyperionVersion.substr(0,1) != "2" || parseInt(this.hyperionVersion.substr(0,2)) >= 16) {
-                this.log.error("Your Version of hyperion (" + this.hyperionVersion + ') is not supported!!');
+            if(this.hyperionVersion.substr(0,1) != '2' || parseInt(this.hyperionVersion.substr(0,2)) >= 16) {
+                this.log.error('Your Version of hyperion (' + this.hyperionVersion + ') is not supported!!');
                 return;
             }
 
@@ -620,7 +624,7 @@ class HyperionNg extends utils.Adapter {
                     this.readOutAdjustments((err, result) => {
                         this.readOutPriorities((err, result) => {
                             this.readOutEffects((err, result) => {
-                                this.log.info("setup finished");
+                                this.log.info('setup finished');
                                 this.subscribeStates('*');
                             });
                         });
@@ -638,7 +642,7 @@ class HyperionNg extends utils.Adapter {
         try {
             if (hyperion_API != null){
                 hyperion_API.clearSocket();
-                
+
                 setTimeout(function () {
                     return callback();
                 },hyperion_API.getCommunicationTimeout());
@@ -748,10 +752,10 @@ class HyperionNg extends utils.Adapter {
      */
     async updateHSLDataPoints(colorHSL)
     {
-        var colorArrayString = colorHSL.split(',');
-        var h = parseInt(colorArrayString[0]);
-        var s = parseFloat(colorArrayString[1]).toFixed(2);
-        var l = parseFloat(colorArrayString[2]).toFixed(2);
+        const colorArrayString = colorHSL.split(',');
+        const h = parseInt(colorArrayString[0]);
+        const s = parseFloat(colorArrayString[1]).toFixed(2);
+        const l = parseFloat(colorArrayString[2]).toFixed(2);
 
         await this.setStateAsync('general.control.setColorHSL_H', { val: h, ack: true });
         await this.setStateAsync('general.control.setColorHSL_S', { val: s, ack: true });
@@ -769,10 +773,10 @@ class HyperionNg extends utils.Adapter {
             this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
 
             if (!state.ack) {
-                var id_arr = id.split('.');
+                const id_arr = id.split('.');
 
                 // #####################  set Components #####################################
-                
+
                 if (id_arr[3] === 'components') {
                     hyperion_API.setComponentStatus(id_arr[4], state.val, id_arr[2], (err, result) => {
                         this.readOutComponents((err, result) => {
@@ -782,7 +786,7 @@ class HyperionNg extends utils.Adapter {
                 }
 
                 // #####################  set Adjustment #####################################
-                
+
                 if (id_arr[3] === 'adjustments') {
                     hyperion_API.setAdjustment(id_arr[4], state.val, id_arr[2], (err, result) => {
                         this.readOutAdjustments((err, result) => {
@@ -798,7 +802,7 @@ class HyperionNg extends utils.Adapter {
                         hyperion_API.clearPriority(-1, instance.val, (err, result) => {
                             this.setState(id,{ val: false, ack: true });
                             this.readOutPriorities((err, result) => {});
-                    
+
                         });
                     });
                 }
@@ -810,7 +814,7 @@ class HyperionNg extends utils.Adapter {
                         this.getStates(this.namespace + '.' + instance.val + '.priorities.0*', (err, obj_array) => {
                             for (var obj in obj_array)  { 
                                 var obj_string = JSON.stringify(obj);
-                                if (obj_string.includes("priority")) {
+                                if (obj_string.includes('priority')) {
                                     hyperion_API.clearPriority(obj_array[obj].val, instance.val, (err, result) => {
                                         this.setState(id,{ val: false, ack: true });
                                         this.readOutPriorities((err, result) => {});
@@ -829,17 +833,17 @@ class HyperionNg extends utils.Adapter {
                             if (effectDuration.val == 0) {
                                 hyperion_API.setEffect(instance.val, state.val, (err, result) => {
                                     setTimeout(() =>{
-                                    this.setState(id,{ val: '', ack: true });
-                                    this.readOutPriorities((err, result) => {});
+                                        this.setState(id,{ val: '', ack: true });
+                                        this.readOutPriorities((err, result) => {});
                                     },this.config['communicationDelay']);
                                 });
                             }
                             else {
                                 hyperion_API.setEffectDuration(instance.val, state.val, effectDuration.val * 1000, (err, result) => {
                                     setTimeout(() =>{
-                                    this.setState(id,{ val: '', ack: true });
-                                    this.setState(effectDuration,{ val: 0, ack: true });
-                                    this.readOutPriorities((err, result) => {});
+                                        this.setState(id,{ val: '', ack: true });
+                                        this.setState(effectDuration,{ val: 0, ack: true });
+                                        this.readOutPriorities((err, result) => {});
                                     },this.config['communicationDelay']);
                                 });
                             }
@@ -855,19 +859,19 @@ class HyperionNg extends utils.Adapter {
                             if (colorDuration.val == 0) {
                                 hyperion_API.setColorRGB(instance.val, state.val, (err, result) => {
                                     setTimeout(() =>{
-                                    this.setState(id,{ val: state.val, ack: true });
-                                    this.updateHSLDataPoints(this.RGBToHSL(state.val));
-                                    this.readOutPriorities((err, result) => {});
+                                        this.setState(id,{ val: state.val, ack: true });
+                                        this.updateHSLDataPoints(this.RGBToHSL(state.val));
+                                        this.readOutPriorities((err, result) => {});
                                     },this.config['communicationDelay']);
                                 });
                             }
                             else {
                                 hyperion_API.setColorRGBDuration(instance.val, state.val, colorDuration.val * 1000, (err, result) => {
                                     setTimeout(() =>{
-                                    this.setState(id,{ val: state.val, ack: true });
-                                    this.updateHSLDataPoints(this.RGBToHSL(state.val));
-                                    this.setState(colorDuration,{ val: 0, ack: true });
-                                    this.readOutPriorities((err, result) => {});
+                                        this.setState(id,{ val: state.val, ack: true });
+                                        this.updateHSLDataPoints(this.RGBToHSL(state.val));
+                                        this.setState(colorDuration,{ val: 0, ack: true });
+                                        this.readOutPriorities((err, result) => {});
                                     },this.config['communicationDelay']);
                                 });
                             }
@@ -881,7 +885,7 @@ class HyperionNg extends utils.Adapter {
                     this.getState(this.namespace + '.general.control.setColorHSL_H',(err, h) => {
                         this.getState(this.namespace + '.general.control.setColorHSL_S',(err, s) => {
                             this.getState(this.namespace + '.general.control.setColorHSL_L',(err, l) => {
-                                var colorRGB = this.HSLToRGB(h.val,s.val,l.val);
+                                const colorRGB = this.HSLToRGB(h.val,s.val,l.val);
                                 this.setState(id,{ val: state.val, ack: true });
                                 this.setState(this.namespace + '.general.control.setColorRGB',{ val: colorRGB, ack: false });
                             });
@@ -905,7 +909,7 @@ class HyperionNg extends utils.Adapter {
                 if (id_arr[3] === 'running') {
                     hyperion_API.startStopInstance(state.val, id_arr[2], (err, result) => {
                         this.readOutInstances((err, result) => {
-                            this.log.info("Instance running status is changed");
+                            this.log.info('Instance running status is changed');
                         });
                     });
                 }
@@ -919,7 +923,7 @@ class HyperionNg extends utils.Adapter {
                                 this.readOutPriorities((err, result) => {
                                     this.readOutEffects((err, result) => {
                                         this.setState(id,{ val: false, ack: true });
-                                        this.log.info("Updated whole Adapter Parameter");
+                                        this.log.info('Updated whole Adapter Parameter');
                                         this.subscribeStates('*');
                                     });
                                 });
@@ -933,8 +937,8 @@ class HyperionNg extends utils.Adapter {
                 if (id_arr[3] === 'control' && id_arr[4] === 'updatePriorities') {
                     this.readOutPriorities((err, result) => {
                         this.setState(id,{ val: false, ack: true });
-                        this.log.info("Updated Priorities");
-                    });         
+                        this.log.info('Updated Priorities');
+                    });
                 }
 
                 // #####################  set internal Grabber Visible ###############
@@ -944,10 +948,10 @@ class HyperionNg extends utils.Adapter {
                         hyperion_API.setGrabberVisible(this.config['prioInternalGrabber'], instance.val, (err, result) => {
                             this.readOutPriorities((err, result) => {
                                 this.setState(id,{ val: false, ack: true });
-                                this.log.info("set Internal Grabber Visible");
-                            }); 
-                        });   
-                    });     
+                                this.log.info('set Internal Grabber Visible');
+                            });
+                        });
+                    });
                 }
 
                 // #####################  set USB Grabber Visible ###############
@@ -957,10 +961,10 @@ class HyperionNg extends utils.Adapter {
                         hyperion_API.setGrabberVisible(this.config['prioUSBGrabber'], instance.val, (err, result) => {
                             this.readOutPriorities((err, result) => {
                                 this.setState(id,{ val: false, ack: true });
-                                this.log.info("set USB Grabber Visible");
-                            }); 
-                        });   
-                    });     
+                                this.log.info('set USB Grabber Visible');
+                            });
+                        });
+                    });
                 }
             }
         } else {
