@@ -49,15 +49,15 @@ class HyperionNg extends utils.Adapter {
 
                 //hyperion set Version
                 this.hyperionVersion = result.info.hyperion.version;
-                
-                var myobj = {type: 'folder',common: {name: 'general'}, native:{id: 'general'}};
+
+                let myobj = {type: 'folder',common: {name: 'general'}, native:{id: 'general'}};
                 await adapter.setObjectNotExistsAsync('general', myobj);
 
                 //hyperion Info
-                var my_hyperion = result.info.hyperion;
-                var myobj = {type: 'folder',common: {name: 'hyperion Info'}, native:{id: 'hyperion Info'}};
+                const my_hyperion = result.info.hyperion;
+                myobj = {type: 'folder',common: {name: 'hyperion Info'}, native:{id: 'hyperion Info'}};
                 await adapter.setObjectNotExistsAsync('general.hyperion', myobj);
-                
+
                 for (var hyperion in my_hyperion){
                     var my_arg_Name = hyperion;
                     var my_arg_val = my_hyperion[hyperion];
@@ -66,7 +66,7 @@ class HyperionNg extends utils.Adapter {
                     await adapter.setObjectNotExistsAsync('general.hyperion.' + my_arg_Name, myobj);
                     await adapter.setStateAsync('general.hyperion.' + my_arg_Name, my_arg_val, true);
                 }
-                
+
                 //System Info
                 var my_system = result.info.system;
                 myobj = {type: 'folder',common: {name: 'System Info'}, native:{id: 'System Info'}};
@@ -382,15 +382,21 @@ class HyperionNg extends utils.Adapter {
 
                 await adapter.setObjectNotExistsAsync(instance + '.' + 'adjustments', myobj);
 
-                var object_array = result.info.adjustment[0];
-                var object_path = instance + '.' + 'adjustments';
+                const object_array = result.info.adjustment[0];
+                const object_path = instance + '.' + 'adjustments';
 
                 adapter.log.debug(JSON.stringify(result.info.adjustment));
 
                 // fill priority with parameter
-                for (var entry in object_array){
-                    var entry_Name = JSON.stringify(entry);
-                    var entry_val = object_array[entry];
+                for (const entry in object_array){
+                    const entry_Name = JSON.stringify(entry);
+                    let entry_val = object_array[entry];
+
+                    switch (typeof entry_val) {
+                        case 'object':
+                            entry_val = JSON.stringify(object_array[entry]);
+                            break;
+                    }
 
                     myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
                     await adapter.setObjectNotExistsAsync(object_path + '.' + entry_Name, myobj);
