@@ -389,12 +389,12 @@ class HyperionNg extends utils.Adapter {
 
                 // fill priority with parameter
                 for (const entry in object_array){
-                    const entry_Name = JSON.stringify(entry);
+                    const entry_Name = entry;
                     let entry_val = object_array[entry];
 
                     switch (typeof entry_val) {
                         case 'object':
-                            entry_val = JSON.stringify(object_array[entry]);
+                            entry_val = object_array[entry];
                             break;
                     }
 

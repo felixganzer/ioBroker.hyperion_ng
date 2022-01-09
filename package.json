@@ -1,6 +1,6 @@
 {
   "name": "iobroker.hyperion_ng",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "author": {
     "name": "felixganzer",
     "email": "felixganzer@web.de"
@@ -14,7 +14,7 @@
   },
   "description": "this adapter can control hyperionNG with iobroker",
   "devDependencies": {
-    "@iobroker/testing": "^2.4.0",
+    "@iobroker/testing": "^6.2.2",
     "@types/chai": "^4.2.14",
     "@types/chai-as-promised": "^7.1.3",
     "@types/gulp": "^4.0.7",
