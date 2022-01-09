@@ -245,6 +245,7 @@ class Hyperion_API
      * @param {Function}    callback	callback function, using (err, result)
      */
     async setComponentStatus(component, state, instance, callback) {
+        component = component.replace(/_/g, '');
         adapterMain.log.info('set component ' + component + ' of instance ' + instance + ' to ' + state);
 
         const self = this;

@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "hyperion_ng",
-        "version": "0.1.22",
+        "version": "0.1.23",
         "news": {
+            "0.1.23": {
+                "en": "bugfixing control components",
+                "de": "Bugfixing control components."
+            },
             "0.1.22": {
                 "en": "add support for HyperHDR and add config to change communicationDelay",
                 "de": "HyperHDR wird jetzt unterstützt. Ein Configeintrag für den Communication Delay wurde hinzugefügt."

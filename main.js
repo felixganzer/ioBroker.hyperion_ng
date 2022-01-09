@@ -58,9 +58,9 @@ class HyperionNg extends utils.Adapter {
                 myobj = {type: 'folder',common: {name: 'hyperion Info'}, native:{id: 'hyperion Info'}};
                 await adapter.setObjectNotExistsAsync('general.hyperion', myobj);
 
-                for (var hyperion in my_hyperion){
-                    var my_arg_Name = hyperion;
-                    var my_arg_val = my_hyperion[hyperion];
+                for (const hyperion in my_hyperion){
+                    const my_arg_Name = hyperion;
+                    const my_arg_val = my_hyperion[hyperion];
 
                     myobj = {type: 'state', common: {role: my_arg_Name, type: typeof(my_arg_val), name: my_arg_Name}, native:{id: my_arg_Name}};
                     await adapter.setObjectNotExistsAsync('general.hyperion.' + my_arg_Name, myobj);
@@ -68,13 +68,13 @@ class HyperionNg extends utils.Adapter {
                 }
 
                 //System Info
-                var my_system = result.info.system;
+                const my_system = result.info.system;
                 myobj = {type: 'folder',common: {name: 'System Info'}, native:{id: 'System Info'}};
                 await adapter.setObjectNotExistsAsync('general.system', myobj);
 
-                for (var system in my_system){
-                    var my_arg_Name = system;
-                    var my_arg_val = my_system[system];
+                for (const system in my_system){
+                    const my_arg_Name = system;
+                    const my_arg_val = my_system[system];
 
                     myobj = {type: 'state', common: {role: my_arg_Name, type: typeof(my_arg_val), name: my_arg_Name}, native:{id: my_arg_Name}};
                     await adapter.setObjectNotExistsAsync('general.system.' + my_arg_Name, myobj);
@@ -210,18 +210,18 @@ class HyperionNg extends utils.Adapter {
                         myobj = {type: 'folder',common: {name: my_priorities_Name}, native:{id: instance + 'priorities'+ my_priorities_ID + my_priorities_Name}};
                         await adapter.setObjectNotExistsAsync(instance + '.' + 'priorities' + '.' + my_priorities_Name, myobj);
 
-                        var object_array = my_priorities[priorities];
-                        var object_path = instance + '.' + 'priorities' + '.' + my_priorities_Name;
+                        const object_array = my_priorities[priorities];
+                        const object_path = instance + '.' + 'priorities' + '.' + my_priorities_Name;
 
                         // fill priority with parameter
-                        for (var entry in object_array){
-                            var entry_Name = entry;
-                            var entry_val = object_array[entry];
+                        for (const entry in object_array){
+                            const entry_Name = entry;
+                            const entry_val = object_array[entry];
 
                             if (entry_Name == 'value') {
-                                for (var value in entry_val){
-                                    var value_Name = value;
-                                    var value_val = entry_val[value];
+                                for (const value in entry_val){
+                                    const value_Name = value;
+                                    const value_val = entry_val[value];
                                     myobj = {type: 'state', common: {role: value_Name, type: typeof(value_val), name: value_Name}, native:{id: value_Name}};
                                     await adapter.setObjectNotExistsAsync(object_path + '.' + value_Name, myobj);
                                     await adapter.setStateAsync(object_path + '.' + value_Name, value_val, true);
@@ -263,22 +263,22 @@ class HyperionNg extends utils.Adapter {
             adapter.log.debug(JSON.stringify(result));
             if( err == null && result.command == 'serverinfo') {
 
-                var my_instances = result.info.instance;
+                const my_instances = result.info.instance;
 
                 numberOfInstances = 0;
-                for (var instance in my_instances){
-                
-                    var my_instance_ID = instance;
-                    var my_instance_Name = JSON.stringify(my_instances[instance].friendly_name);
-                    var my_instance_running = my_instances[instance].running;
+                for (const instance in my_instances){
 
-                    var myobj = {type: 'folder',common: {name: my_instance_Name}, native:{id: my_instance_Name}};
+                    const my_instance_ID = instance;
+                    const my_instance_Name = JSON.stringify(my_instances[instance].friendly_name);
+                    const my_instance_running = my_instances[instance].running;
+
+                    let myobj = {type: 'folder',common: {name: my_instance_Name}, native:{id: my_instance_Name}};
                     await adapter.setObjectNotExistsAsync(my_instance_ID.toString(), myobj);
 
                     myobj = {type: 'state', common: {role: 'running status', type: 'boolean', name: my_instance_Name}, native:{id: my_instance_ID + my_instance_Name}};
                     await adapter.setObjectNotExistsAsync(my_instance_ID + '.' + 'running', myobj);
                     await adapter.setStateAsync(my_instance_ID + '.' + 'running', my_instance_running, true);
-                    
+
                     numberOfInstances++;
                 }
             }
@@ -304,11 +304,11 @@ class HyperionNg extends utils.Adapter {
             if( err == null && result.command == 'serverinfo') {
 
                 let myobj;
-                var my_components = result.info.components;
-                for (var component in my_components){
+                const my_components = result.info.components;
+                for ( const component in my_components){
 
-                    var my_component_Name   = JSON.stringify(my_components[component].name);
-                    var my_component_status = my_components[component].enabled;
+                    const my_component_Name   = my_components[component].name;
+                    const my_component_status = my_components[component].enabled;
 
                     myobj ={
                         type: 'folder',
@@ -636,7 +636,7 @@ class HyperionNg extends utils.Adapter {
                         });
                     });
                 });
-            }); 
+            });
         });
     }
 
@@ -786,7 +786,7 @@ class HyperionNg extends utils.Adapter {
                 if (id_arr[3] === 'components') {
                     hyperion_API.setComponentStatus(id_arr[4], state.val, id_arr[2], (err, result) => {
                         this.readOutComponents((err, result) => {
-                            this.log.info("component is set");
+                            this.log.info('component is set');
                         },parseInt(id_arr[2]));
                     });
                 }
@@ -796,7 +796,7 @@ class HyperionNg extends utils.Adapter {
                 if (id_arr[3] === 'adjustments') {
                     hyperion_API.setAdjustment(id_arr[4], state.val, id_arr[2], (err, result) => {
                         this.readOutAdjustments((err, result) => {
-                            this.log.info("Adjustment is set");
+                            this.log.info('Adjustment is set');
                         },parseInt(id_arr[2]));
                     });
                 }
@@ -818,8 +818,8 @@ class HyperionNg extends utils.Adapter {
                 if (id_arr[3] === 'control' && id_arr[4] === 'clearVisible') {
                     this.getState(this.namespace + '.general.control.instance', (err, instance) => {
                         this.getStates(this.namespace + '.' + instance.val + '.priorities.0*', (err, obj_array) => {
-                            for (var obj in obj_array)  { 
-                                var obj_string = JSON.stringify(obj);
+                            for (const obj in obj_array)  {
+                                const obj_string = JSON.stringify(obj);
                                 if (obj_string.includes('priority')) {
                                     hyperion_API.clearPriority(obj_array[obj].val, instance.val, (err, result) => {
                                         this.setState(id,{ val: false, ack: true });
