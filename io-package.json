@@ -79,6 +79,7 @@
         "extIcon": "https://raw.githubusercontent.com/felixganzer/ioBroker.hyperion_ng/master/admin/hyperion_ng.png",
         "readme": "https://github.com/felixganzer/ioBroker.hyperion_ng/blob/master/README.md",
         "loglevel": "info",
+        "tier": 2,
         "mode": "daemon",
         "type": "lighting",
         "compact": true,
