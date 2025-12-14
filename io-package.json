@@ -72,9 +72,7 @@
             "hyperion"
         ],
         "license": "MIT",
-        "platform": "Javascript/Node.js",
-        "main": "main.js",
-        "icon": "hyperion_ng.png",
+        "platform": "Javascript/Node.js",        "icon": "hyperion_ng.png",
         "enabled": true,
         "extIcon": "https://raw.githubusercontent.com/felixganzer/ioBroker.hyperion_ng/master/admin/hyperion_ng.png",
         "readme": "https://github.com/felixganzer/ioBroker.hyperion_ng/blob/master/README.md",
