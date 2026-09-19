@@ -1,6 +1,6 @@
 "use strict";
 
-var net = require('net');
+var net = require('node:net');
 var adapterMain = null;
 var callbackFns = [];
 
