@@ -89,6 +89,7 @@
         "mode": "daemon",
         "type": "lighting",
         "compact": true,
+        "materialize": true,
         "connectionType": "local",
         "dataSource": "push",
         "dependencies": [
