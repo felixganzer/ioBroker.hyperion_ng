@@ -66,6 +66,10 @@ You can manually update the data of the whole adaptor, if you set general.contro
 
 ## Changelog
 
+
+### **WORK IN PROGRESS**
+- (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
+
 ### 0.1.23 (2022.01.09)
 * (felixganzer) bugfix read out and control components
 
