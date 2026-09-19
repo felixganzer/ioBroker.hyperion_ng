@@ -73,29 +73,41 @@ class Hyperion_API
      *
      * @param {string} data			data string
      */
-    parseData(data){
+    parseData(data) {
         this.databuffer += data;
         adapterMain.log.debug('databuffer: ' + this.databuffer);
-        if( this.databuffer.indexOf('\n') > -1 ) {
-            this.databuffer.split('\n').forEach(function(response, i){
-                adapterMain.log.debug('response string: ' + response);
-
-                // not sure why this happens, dual \n
-                if( response.length == 0 ) return;
-
-                try {
-                    response = [ null, JSON.parse(response) ];
-                } catch(e){
-                    response = [ e, null ];
-                }
-
-                const callbackFn = callbackFns.shift();
-                if( typeof callbackFn == 'function' ) {
-                    adapterMain.log.debug('response JSON: ' + JSON.stringify(response));
-                    callbackFn.apply(null, response);
-                }
-            }.bind(this));
-        }
+        const responses = this.databuffer.split('\n');
+        this.databuffer = responses.pop() || '';
+        responses.forEach(response => {
+            response = response.trim();
+            if (!response) return;
+            adapterMain.log.debug('response string: ' + response);
+            const callbackFn = callbackFns.shift();
+            if (typeof callbackFn !== 'function') {
+                adapterMain.log.warn('Received a Hyperion response without a matching callback');
+                return;
+            }
+            let parsedResponse;
+            try {
+                parsedResponse = JSON.parse(response);
+            } catch (error) {
+                adapterMain.log.warn(`Unable to parse Hyperion response: ${error.message}`);
+                Promise.resolve().then(() => callbackFn(error, null)).catch(callbackError => {
+                    adapterMain.log.error(`Error in Hyperion callback: ${callbackError.stack || callbackError}`);
+                });
+                return;
+            }
+            adapterMain.log.debug('response JSON: ' + JSON.stringify(parsedResponse));
+            const responseError = parsedResponse.success === false
+                ? new Error(parsedResponse.error || 'Hyperion returned an unsuccessful response')
+                : null;
+            if (responseError) {
+                adapterMain.log.warn(`Hyperion command "${parsedResponse.command || 'unknown'}" failed: ${responseError.message}`);
+            }
+            Promise.resolve().then(() => callbackFn(responseError, parsedResponse)).catch(callbackError => {
+                adapterMain.log.error(`Error in Hyperion callback: ${callbackError.stack || callbackError}`);
+            });
+        });
     }
 
     /**

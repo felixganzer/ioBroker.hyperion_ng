@@ -13,6 +13,39 @@ var hyperion_API = null;
 var adapter = null;
 var numberOfInstances = 0;
 
+/**
+ * Validate a Hyperion response and return its info object.
+ *
+ * @param {Error|null} err callback error
+ * @param {object|null} result Hyperion response
+ * @param {string} expectedCommand expected Hyperion command
+ * @param {string} context description used for logging
+ * @returns {object|null} Hyperion info object or null
+ */
+function getHyperionInfo(err, result, expectedCommand, context) {
+    if (err) {
+        adapter.log.warn(`${context}: ${err.message || err}`);
+        return null;
+    }
+    if (!result || typeof result !== 'object') {
+        adapter.log.warn(`${context}: empty or invalid Hyperion response`);
+        return null;
+    }
+    if (result.success === false) {
+        adapter.log.warn(`${context}: ${result.error || 'Hyperion request failed'}`);
+        return null;
+    }
+    if (expectedCommand && result.command !== expectedCommand) {
+        adapter.log.warn(`${context}: unexpected command "${result.command || 'unknown'}", expected "${expectedCommand}"`);
+        return null;
+    }
+    if (!result.info || typeof result.info !== 'object') {
+        adapter.log.warn(`${context}: response contains no info object`);
+        return null;
+    }
+    return result.info;
+}
+
 // Load your modules here, e.g.:
 // const fs = require("node:fs");
 
@@ -42,50 +75,37 @@ class HyperionNg extends utils.Adapter {
      * @param {() => void} callback
      */
     async readOutSystemInformations(callback) {
-
         hyperion_API.getSystemInfo(async (err, result) => {
             adapter.log.debug(JSON.stringify(result));
-            if( err == null && result.command == 'sysinfo') {
-
-                //hyperion set Version
-                this.hyperionVersion = result.info.hyperion.version;
-
-                let myobj = {type: 'folder',common: {name: 'general'}, native:{id: 'general'}};
+            try {
+                const info = getHyperionInfo(err, result, 'sysinfo', 'Unable to read Hyperion system information');
+                if (!info || !info.hyperion || !info.system) return;
+                this.hyperionVersion = info.hyperion.version;
+                let myobj = {type: 'folder', common: {name: 'general'}, native: {id: 'general'}};
                 await adapter.setObjectNotExistsAsync('general', myobj);
-
-                //hyperion Info
-                const my_hyperion = result.info.hyperion;
-                myobj = {type: 'folder',common: {name: 'hyperion Info'}, native:{id: 'hyperion Info'}};
+                const my_hyperion = info.hyperion;
+                myobj = {type: 'folder', common: {name: 'hyperion Info'}, native: {id: 'hyperion Info'}};
                 await adapter.setObjectNotExistsAsync('general.hyperion', myobj);
-
-                for (const hyperion in my_hyperion){
-                    const my_arg_Name = hyperion;
-                    const my_arg_val = my_hyperion[hyperion];
-
-                    myobj = {type: 'state', common: {role: my_arg_Name, type: typeof(my_arg_val), name: my_arg_Name}, native:{id: my_arg_Name}};
-                    await adapter.setObjectNotExistsAsync('general.hyperion.' + my_arg_Name, myobj);
-                    await adapter.setStateAsync('general.hyperion.' + my_arg_Name, my_arg_val, true);
+                for (const hyperion in my_hyperion) {
+                    const value = my_hyperion[hyperion];
+                    myobj = {type: 'state', common: {role: hyperion, type: typeof value, name: hyperion}, native: {id: hyperion}};
+                    await adapter.setObjectNotExistsAsync(`general.hyperion.${hyperion}`, myobj);
+                    await adapter.setStateAsync(`general.hyperion.${hyperion}`, value, true);
                 }
-
-                //System Info
-                const my_system = result.info.system;
-                myobj = {type: 'folder',common: {name: 'System Info'}, native:{id: 'System Info'}};
+                const my_system = info.system;
+                myobj = {type: 'folder', common: {name: 'System Info'}, native: {id: 'System Info'}};
                 await adapter.setObjectNotExistsAsync('general.system', myobj);
-
-                for (const system in my_system){
-                    const my_arg_Name = system;
-                    const my_arg_val = my_system[system];
-
-                    myobj = {type: 'state', common: {role: my_arg_Name, type: typeof(my_arg_val), name: my_arg_Name}, native:{id: my_arg_Name}};
-                    await adapter.setObjectNotExistsAsync('general.system.' + my_arg_Name, myobj);
-                    await adapter.setStateAsync('general.system.' + my_arg_Name, my_arg_val, true);
+                for (const system in my_system) {
+                    const value = my_system[system];
+                    myobj = {type: 'state', common: {role: system, type: typeof value, name: system}, native: {id: system}};
+                    await adapter.setObjectNotExistsAsync(`general.system.${system}`, myobj);
+                    await adapter.setStateAsync(`general.system.${system}`, value, true);
                 }
+            } catch (error) {
+                adapter.log.error(`Error while processing Hyperion system information: ${error.stack || error}`);
+            } finally {
+                if (typeof callback === 'function') callback();
             }
-            else {
-                adapter.log.error('Error at read out SystemInformations');
-            }
-
-            return callback();
         });
     }
 
@@ -94,62 +114,36 @@ class HyperionNg extends utils.Adapter {
      * @param {() => void} callback
      */
     async readOutEffects(callback) {
-
         hyperion_API.getServerInfo(async (err, result) => {
             adapter.log.debug(JSON.stringify(result));
-            if( err == null && result.command == 'serverinfo') {
-
-                // create priority folder at instance
-                const my_effects       = result.info.effects;
-                let my_effects_ID    = -1;
-
-                let myobj = {type: 'folder',common: {name: 'effects'}, native:{id: 'effects'}};
+            try {
+                const info = getHyperionInfo(err, result, 'serverinfo', 'Unable to read Hyperion effects');
+                if (!info || !Array.isArray(info.effects)) return;
+                const my_effects = info.effects;
+                let my_effects_ID = -1;
+                let myobj = {type: 'folder', common: {name: 'effects'}, native: {id: 'effects'}};
                 await adapter.setObjectNotExistsAsync('general.effects', myobj);
-
-                adapter.log.info('create effects');
-
-                // create priority at priority folder
-                for (const effects in my_effects){
-
+                for (const effects in my_effects) {
                     my_effects_ID++;
-                    const my_effects_ID_string = ('00000' + my_effects_ID).slice(-2);
-                    const my_effects_Name =  my_effects_ID_string + '-' + my_effects[effects].name;
-
-                    myobj = {type: 'folder', common: {name: my_effects_Name}, native:{id: 'effects'+ my_effects_ID + my_effects_Name}};
-                    await adapter.setObjectNotExistsAsync('general.effects' + '.' + my_effects_Name, myobj);
-
-                    const object_array = my_effects[effects].args;
-                    const object_path = 'general.effects' + '.' + my_effects_Name;
-
-                    // fill priority with parameter
-                    for (const entry in object_array){
-                        const entry_Name = entry;
-                        let entry_val = object_array[entry];
-
-                        switch (typeof entry_val) {
-                            case 'string':
-                                entry_val = JSON.stringify(object_array[entry]);
-                                break;
-                            case 'object':
-                                entry_val = JSON.stringify(object_array[entry]);
-                                break;
-                            case 'boolean':
-                                entry_val = Boolean(object_array[entry]);
-                                break;
-
-                        }
-
-                        myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
-                        await adapter.setObjectNotExistsAsync(object_path + '.' + entry_Name, myobj);
-                        await adapter.setStateAsync(object_path + '.' + entry_Name, entry_val, true);
+                    const idString = ('00000' + my_effects_ID).slice(-2);
+                    const effectName = `${idString}-${my_effects[effects].name}`;
+                    myobj = {type: 'folder', common: {name: effectName}, native: {id: `effects${my_effects_ID}${effectName}`}};
+                    await adapter.setObjectNotExistsAsync(`general.effects.${effectName}`, myobj);
+                    const args = my_effects[effects].args || {};
+                    for (const entry in args) {
+                        let value = args[entry];
+                        if (typeof value === 'string' || typeof value === 'object') value = JSON.stringify(value);
+                        else if (typeof value === 'boolean') value = Boolean(value);
+                        myobj = {type: 'state', common: {role: entry, type: typeof value, name: entry}, native: {id: entry}};
+                        await adapter.setObjectNotExistsAsync(`general.effects.${effectName}.${entry}`, myobj);
+                        await adapter.setStateAsync(`general.effects.${effectName}.${entry}`, value, true);
                     }
                 }
+            } catch (error) {
+                adapter.log.error(`Error while processing Hyperion effects: ${error.stack || error}`);
+            } finally {
+                if (typeof callback === 'function') callback();
             }
-            else {
-                adapter.log.error('Error at read out SystemInformations');
-            }
-
-            return callback();
         });
     }
 
@@ -183,73 +177,49 @@ class HyperionNg extends utils.Adapter {
      * @param {Integer}     instance integer of instance, which will be used. If not set, it will be 0 as default
      */
     readOutPriorities(callback, instance = 0) {
-
         const self = this;
-
-        hyperion_API.getServerInfo(function(err, result){
+        hyperion_API.getServerInfo(function(err, result) {
             adapter.log.debug(JSON.stringify(result));
-            if( err == null && result.command == 'serverinfo') {
-
-                self.deleteObjects('hyperion_ng.0.' + instance + '.priorities*',async function(err, result2){ 
-
-                    // create priority folder at instance
-                    const my_priorities       = result.info.priorities;
-                    let my_priorities_ID    = -1;
-
-                    let myobj = {type: 'folder',common: {name: 'priorities'}, native:{id: instance + 'priorities'}};
-                    await adapter.setObjectNotExistsAsync(instance + '.' + 'priorities', myobj);
-
-                    adapter.log.info('create priorities');
-
-                    // create priority at priority folder
-                    for (const priorities in my_priorities){
-
-                        my_priorities_ID++;
-                        const my_priorities_Name =  my_priorities_ID + '-' + my_priorities[priorities].componentId;
-
-                        myobj = {type: 'folder',common: {name: my_priorities_Name}, native:{id: instance + 'priorities'+ my_priorities_ID + my_priorities_Name}};
-                        await adapter.setObjectNotExistsAsync(instance + '.' + 'priorities' + '.' + my_priorities_Name, myobj);
-
-                        const object_array = my_priorities[priorities];
-                        const object_path = instance + '.' + 'priorities' + '.' + my_priorities_Name;
-
-                        // fill priority with parameter
-                        for (const entry in object_array){
-                            const entry_Name = entry;
-                            const entry_val = object_array[entry];
-
-                            if (entry_Name == 'value') {
-                                for (const value in entry_val){
-                                    const value_Name = value;
-                                    const value_val = entry_val[value];
-                                    myobj = {type: 'state', common: {role: value_Name, type: typeof(value_val), name: value_Name}, native:{id: value_Name}};
-                                    await adapter.setObjectNotExistsAsync(object_path + '.' + value_Name, myobj);
-                                    await adapter.setStateAsync(object_path + '.' + value_Name, value_val, true);
+            const info = getHyperionInfo(err, result, 'serverinfo', `Unable to read Hyperion priorities for instance ${instance}`);
+            if (!info || !Array.isArray(info.priorities)) {
+                return typeof callback === 'function' ? callback() : undefined;
+            }
+            self.deleteObjects(`${adapter.namespace}.${instance}.priorities*`, async function() {
+                try {
+                    const my_priorities = info.priorities;
+                    let priorityID = -1;
+                    let myobj = {type: 'folder', common: {name: 'priorities'}, native: {id: `${instance}priorities`}};
+                    await adapter.setObjectNotExistsAsync(`${instance}.priorities`, myobj);
+                    for (const priority of my_priorities) {
+                        priorityID++;
+                        const priorityName = `${priorityID}-${priority.componentId}`;
+                        myobj = {type: 'folder', common: {name: priorityName}, native: {id: `${instance}priorities${priorityID}${priorityName}`}};
+                        const objectPath = `${instance}.priorities.${priorityName}`;
+                        await adapter.setObjectNotExistsAsync(objectPath, myobj);
+                        for (const entry in priority) {
+                            const value = priority[entry];
+                            if (entry === 'value' && value && typeof value === 'object') {
+                                for (const valueName in value) {
+                                    const nestedValue = value[valueName];
+                                    myobj = {type: 'state', common: {role: valueName, type: typeof nestedValue, name: valueName}, native: {id: valueName}};
+                                    await adapter.setObjectNotExistsAsync(`${objectPath}.${valueName}`, myobj);
+                                    await adapter.setStateAsync(`${objectPath}.${valueName}`, nestedValue, true);
                                 }
+                            } else {
+                                myobj = {type: 'state', common: {role: entry, type: typeof value, name: entry}, native: {id: entry}};
+                                await adapter.setObjectNotExistsAsync(`${objectPath}.${entry}`, myobj);
+                                await adapter.setStateAsync(`${objectPath}.${entry}`, value, true);
                             }
-                            else{
-                                myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
-                                await adapter.setObjectNotExistsAsync(object_path + '.' + entry_Name, myobj);
-                                await adapter.setStateAsync(object_path + '.' + entry_Name, entry_val, true);
-                            }
-
                         }
                     }
-
-                    instance++;
-
-                    if (instance >= numberOfInstances) {
-                        adapter.log.info('read out priorities finished');
-                        return callback();
-                    }
-
-                    self.readOutPriorities(callback, instance);
-                },);
-            }
-            else {
-                adapter.log.error('Error at read out priorities');
-            }
-
+                    const nextInstance = instance + 1;
+                    if (nextInstance >= numberOfInstances) return callback();
+                    self.readOutPriorities(callback, nextInstance);
+                } catch (error) {
+                    adapter.log.error(`Error while processing Hyperion priorities: ${error.stack || error}`);
+                    if (typeof callback === 'function') callback();
+                }
+            });
         }, instance);
     }
 
@@ -258,68 +228,29 @@ class HyperionNg extends utils.Adapter {
      * @param {() => void} callback
      */
     async readOutInstances(callback) {
-
-        hyperion_API.getServerInfo(async function(err, result){
+        hyperion_API.getServerInfo(async function(err, result) {
             adapter.log.debug(JSON.stringify(result));
-            if (
-                err == null &&
-                result &&
-                result.command === 'serverinfo' &&
-                result.success === true &&
-                result.info &&
-                result.info.instance
-            ) {
-
-                const my_instances = result.info.instance;
-
+            try {
+                const info = getHyperionInfo(err, result, 'serverinfo', 'Unable to read Hyperion instances');
+                if (!info || !info.instance || typeof info.instance !== 'object') return;
                 numberOfInstances = 0;
-                for (const instance in my_instances){
-
-                    const my_instance_ID = instance;
-                    const my_instance_Name = JSON.stringify(my_instances[instance].friendly_name);
-                    const my_instance_running = my_instances[instance].running;
-
-                    let myobj = {
-                        type: 'folder',
-                        common: {name: my_instance_Name},
-                        native: {id: my_instance_Name}
-                    };
-
-                    await adapter.setObjectNotExistsAsync(my_instance_ID.toString(), myobj);
-
-                    myobj = {
-                        type: 'state',
-                        common: {
-                            role: 'running status',
-                            type: 'boolean',
-                            name: my_instance_Name
-                        },
-                        native: {
-                            id: my_instance_ID + my_instance_Name
-                        }
-                    };
-
-                    await adapter.setObjectNotExistsAsync(
-                        my_instance_ID + '.' + 'running',
-                        myobj
-                    );
-
-                    await adapter.setStateAsync(
-                        my_instance_ID + '.' + 'running',
-                        my_instance_running,
-                        true
-                    );
-
+                for (const instance in info.instance) {
+                    const currentInstance = info.instance[instance];
+                    if (!currentInstance || typeof currentInstance !== 'object') continue;
+                    const name = currentInstance.friendly_name || `Instance ${instance}`;
+                    const running = currentInstance.running === true;
+                    let myobj = {type: 'folder', common: {name}, native: {id: instance}};
+                    await adapter.setObjectNotExistsAsync(instance.toString(), myobj);
+                    myobj = {type: 'state', common: {role: 'indicator.reachable', type: 'boolean', read: true, write: true, name}, native: {id: instance}};
+                    await adapter.setObjectNotExistsAsync(`${instance}.running`, myobj);
+                    await adapter.setStateAsync(`${instance}.running`, running, true);
                     numberOfInstances++;
                 }
-            } else {
-                adapter.log.warn(
-                    'Unable to read Hyperion instances: ' +
-                    (result?.error || err || 'unknown error')
-                );
+            } catch (error) {
+                adapter.log.error(`Error while processing Hyperion instances: ${error.stack || error}`);
+            } finally {
+                if (typeof callback === 'function') callback();
             }
-
-            return callback();
         });
     }
 
@@ -329,64 +260,42 @@ class HyperionNg extends utils.Adapter {
      * @param {Integer}     instance integer of instance, which will be used. If not set, it will be 0 as default
      */
     async readOutComponents(callback, instance = 0) {
-
         const self = this;
-
-        hyperion_API.getServerInfo(async function(err, result){
+        hyperion_API.getServerInfo(async function(err, result) {
             adapter.log.debug(JSON.stringify(result));
-            if( err == null && result.command == 'serverinfo') {
-
-                let myobj;
-                const my_components = result.info.components;
-                for ( const component in my_components){
-
-                    const my_component_Name   = my_components[component].name;
-                    const my_component_status = my_components[component].enabled;
-
-                    myobj ={
-                        type: 'folder',
-                        common: {
-                            name: 'components',
-                            role: 'component paramter',
-                        },
-                        native: {id: 'components'},
-                    };
-
-                    await adapter.setObjectNotExistsAsync(instance + '.' + 'components', myobj);
-
-                    myobj = {type: 'state', common: {role: 'set component status', type: 'boolean', name: my_component_Name}, native:{id: instance + my_component_Name}};
-
-                    await adapter.setObjectNotExistsAsync(instance + '.' + 'components' + '.' + my_component_Name, myobj);
-                    await adapter.setStateAsync(instance + '.' + 'components' + '.' + my_component_Name, my_component_status, true);
+            try {
+                const info = getHyperionInfo(err, result, 'serverinfo', `Unable to read Hyperion components for instance ${instance}`);
+                if (!info || !Array.isArray(info.components)) return;
+                let myobj = {type: 'folder', common: {name: 'components', role: 'component parameter'}, native: {id: 'components'}};
+                await adapter.setObjectNotExistsAsync(`${instance}.components`, myobj);
+                for (const component of info.components) {
+                    if (!component || typeof component !== 'object') continue;
+                    const name = component.name;
+                    if (!name) continue;
+                    myobj = {type: 'state', common: {role: 'switch', type: 'boolean', read: true, write: true, name}, native: {id: `${instance}${name}`}};
+                    await adapter.setObjectNotExistsAsync(`${instance}.components.${name}`, myobj);
+                    await adapter.setStateAsync(`${instance}.components.${name}`, component.enabled === true, true);
                 }
-
-                // read out video mode
-                const my_videoMode = JSON.stringify(result.info.videomode);
-                myobj = {type: 'state', common: {role: 'video mode', type: 'string', name: 'video mode'}, native:{id: instance + 'video mode'}};
-
-                await adapter.setObjectNotExistsAsync(instance + '.' + 'video mode', myobj);
-                await adapter.setStateAsync(instance + '.' + 'video mode', my_videoMode, true);
-
-                // read out LED Mapping
-                const my_imageToLedMappingType = JSON.stringify(result.info.imageToLedMappingType);
-                myobj = {type: 'state', common: {role: 'imageToLedMappingType', type: 'string', name: 'imageToLedMappingType'}, native:{id: instance + 'imageToLedMappingType'}};
-
-                await adapter.setObjectNotExistsAsync(instance + '.' + 'imageToLedMappingType', myobj);
-                await adapter.setStateAsync(instance + '.' + 'imageToLedMappingType', my_imageToLedMappingType, true);
-
-                instance++;
+                if (info.videomode !== undefined) {
+                    myobj = {type: 'state', common: {role: 'state', type: 'string', read: true, write: false, name: 'video mode'}, native: {id: `${instance}video mode`}};
+                    await adapter.setObjectNotExistsAsync(`${instance}.video mode`, myobj);
+                    await adapter.setStateAsync(`${instance}.video mode`, String(info.videomode), true);
+                }
+                if (info.imageToLedMappingType !== undefined) {
+                    myobj = {type: 'state', common: {role: 'state', type: 'string', read: true, write: false, name: 'imageToLedMappingType'}, native: {id: `${instance}imageToLedMappingType`}};
+                    await adapter.setObjectNotExistsAsync(`${instance}.imageToLedMappingType`, myobj);
+                    await adapter.setStateAsync(`${instance}.imageToLedMappingType`, String(info.imageToLedMappingType), true);
+                }
+            } catch (error) {
+                adapter.log.error(`Error while processing Hyperion components: ${error.stack || error}`);
+            } finally {
+                const nextInstance = instance + 1;
+                if (nextInstance >= numberOfInstances) {
+                    if (typeof callback === 'function') callback();
+                } else {
+                    self.readOutComponents(callback, nextInstance);
+                }
             }
-            else {
-                adapter.log.error('Error at read out components');
-            }
-
-            if (instance >= numberOfInstances) {
-                adapter.log.info('read out components finished');
-                return callback();
-            }
-
-            self.readOutComponents(callback, instance);
-
         }, instance);
     }
 
@@ -397,58 +306,31 @@ class HyperionNg extends utils.Adapter {
     */
 
     async readOutAdjustments(callback, instance = 0) {
-
         const self = this;
-
-        hyperion_API.getServerInfo(async function(err, result){
+        hyperion_API.getServerInfo(async function(err, result) {
             adapter.log.debug(JSON.stringify(result));
-            if( err == null && result.command == 'serverinfo') {
-
-                let myobj ={
-                    type: 'folder',
-                    common: {
-                        name: 'adjustments',
-                        role: 'adjustment paramter',
-                    },
-                    native: {id: 'adjustments'},
-                };
-
-                await adapter.setObjectNotExistsAsync(instance + '.' + 'adjustments', myobj);
-
-                const object_array = result.info.adjustment[0];
-                const object_path = instance + '.' + 'adjustments';
-
-                adapter.log.debug(JSON.stringify(result.info.adjustment));
-
-                // fill priority with parameter
-                for (const entry in object_array){
-                    const entry_Name = entry;
-                    let entry_val = object_array[entry];
-
-                    switch (typeof entry_val) {
-                        case 'object':
-                            entry_val = object_array[entry];
-                            break;
-                    }
-
-                    myobj = {type: 'state', common: {role: entry_Name, type: typeof(entry_val), name: entry_Name}, native:{id: entry_Name}};
-                    await adapter.setObjectNotExistsAsync(object_path + '.' + entry_Name, myobj);
-                    await adapter.setStateAsync(object_path + '.' + entry_Name, entry_val, true);
+            try {
+                const info = getHyperionInfo(err, result, 'serverinfo', `Unable to read Hyperion adjustments for instance ${instance}`);
+                if (!info || !Array.isArray(info.adjustment) || !info.adjustment[0]) return;
+                let myobj = {type: 'folder', common: {name: 'adjustments', role: 'adjustment parameter'}, native: {id: 'adjustments'}};
+                await adapter.setObjectNotExistsAsync(`${instance}.adjustments`, myobj);
+                const adjustment = info.adjustment[0];
+                for (const entry in adjustment) {
+                    const value = adjustment[entry];
+                    myobj = {type: 'state', common: {role: entry, type: typeof value, name: entry}, native: {id: entry}};
+                    await adapter.setObjectNotExistsAsync(`${instance}.adjustments.${entry}`, myobj);
+                    await adapter.setStateAsync(`${instance}.adjustments.${entry}`, value, true);
                 }
-
-                instance++;
+            } catch (error) {
+                adapter.log.error(`Error while processing Hyperion adjustments: ${error.stack || error}`);
+            } finally {
+                const nextInstance = instance + 1;
+                if (nextInstance >= numberOfInstances) {
+                    if (typeof callback === 'function') callback();
+                } else {
+                    self.readOutAdjustments(callback, nextInstance);
+                }
             }
-            else {
-                adapter.log.error('Error at read out Adjustments');
-            }
-
-            if (instance >= numberOfInstances) {
-                adapter.log.info('read out Adjustments finished');
-                return callback();
-            }
-
-            self.readOutAdjustments(callback, instance);
-
         }, instance);
     }
 
