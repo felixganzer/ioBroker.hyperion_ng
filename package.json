@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/felixganzer/ioBroker.hyperion_ng",
   "keywords": [
+    "ioBroker",
     "hyperionng"
   ],
   "license": "MIT",
