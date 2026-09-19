@@ -1,8 +1,12 @@
 {
     "common": {
         "name": "hyperion_ng",
-        "version": "0.1.23",
+        "version": "0.1.24",
         "news": {
+            "0.1.24": {
+                "en": "Maintenance release. Updated adapter metadata and applied ioBroker template improvements.",
+                "de": "Wartungsrelease. Adapter-Metadaten aktualisiert und ioBroker-Template-Anpassungen übernommen."
+            },
             "0.1.23": {
                 "en": "bugfixing control components",
                 "de": "Bugfixing control components."
@@ -40,7 +44,6 @@
                 "zh-cn": "首次出版"
             }
         },
-        "title": "hyperion.NG",
         "titleLang": {
             "en": "hyperion.NG",
             "de": "hyperion.NG",
@@ -71,7 +74,10 @@
         "keywords": [
             "hyperion"
         ],
-        "license": "MIT",
+        "licenseInformation": {
+            "type": "free",
+            "license": "MIT"
+        },
         "platform": "Javascript/Node.js",
         "main": "main.js",
         "icon": "hyperion_ng.png",
@@ -79,18 +85,18 @@
         "extIcon": "https://raw.githubusercontent.com/felixganzer/ioBroker.hyperion_ng/master/admin/hyperion_ng.png",
         "readme": "https://github.com/felixganzer/ioBroker.hyperion_ng/blob/master/README.md",
         "loglevel": "info",
+        "tier": 2,
         "mode": "daemon",
         "type": "lighting",
         "compact": true,
         "connectionType": "local",
         "dataSource": "push",
-        "materialize": true,
         "dependencies": [
             {
-                "js-controller": ">=2.0.0"
+                "js-controller": ">=6.0.11"
             }
         ],
-        "supportStopInstance": 500,
+        "supportStopInstance": true,
         "stopTimeout": 500
     },
     "native": {
