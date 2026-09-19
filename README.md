@@ -67,8 +67,13 @@ You can manually update the data of the whole adaptor, if you set general.contro
 ## Changelog
 
 
-### **WORK IN PROGRESS**
-- (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
+### 0.1.25 (2026.09.19)
+- Updated development infrastructure
+- Updated @iobroker/testing to current version
+- Updated @iobroker/adapter-core
+- Modernized CI configuration
+- Improved Hyperion API error handling
+- Fixed crashes when Hyperion returns invalid or incomplete instance information
 
 ### 0.1.23 (2022.01.09)
 * (felixganzer) bugfix read out and control components
