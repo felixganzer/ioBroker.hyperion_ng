@@ -261,7 +261,14 @@ class HyperionNg extends utils.Adapter {
 
         hyperion_API.getServerInfo(async function(err, result){
             adapter.log.debug(JSON.stringify(result));
-            if( err == null && result.command == 'serverinfo') {
+            if (
+                err == null &&
+                result &&
+                result.command === 'serverinfo' &&
+                result.success === true &&
+                result.info &&
+                result.info.instance
+            ) {
 
                 const my_instances = result.info.instance;
 
@@ -272,18 +279,44 @@ class HyperionNg extends utils.Adapter {
                     const my_instance_Name = JSON.stringify(my_instances[instance].friendly_name);
                     const my_instance_running = my_instances[instance].running;
 
-                    let myobj = {type: 'folder',common: {name: my_instance_Name}, native:{id: my_instance_Name}};
+                    let myobj = {
+                        type: 'folder',
+                        common: {name: my_instance_Name},
+                        native: {id: my_instance_Name}
+                    };
+
                     await adapter.setObjectNotExistsAsync(my_instance_ID.toString(), myobj);
 
-                    myobj = {type: 'state', common: {role: 'running status', type: 'boolean', name: my_instance_Name}, native:{id: my_instance_ID + my_instance_Name}};
-                    await adapter.setObjectNotExistsAsync(my_instance_ID + '.' + 'running', myobj);
-                    await adapter.setStateAsync(my_instance_ID + '.' + 'running', my_instance_running, true);
+                    myobj = {
+                        type: 'state',
+                        common: {
+                            role: 'running status',
+                            type: 'boolean',
+                            name: my_instance_Name
+                        },
+                        native: {
+                            id: my_instance_ID + my_instance_Name
+                        }
+                    };
+
+                    await adapter.setObjectNotExistsAsync(
+                        my_instance_ID + '.' + 'running',
+                        myobj
+                    );
+
+                    await adapter.setStateAsync(
+                        my_instance_ID + '.' + 'running',
+                        my_instance_running,
+                        true
+                    );
 
                     numberOfInstances++;
                 }
-            }
-            else {
-                adapter.log.error('Error at read out instances');
+            } else {
+                adapter.log.warn(
+                    'Unable to read Hyperion instances: ' +
+                    (result?.error || err || 'unknown error')
+                );
             }
 
             return callback();

@@ -4,8 +4,8 @@
         "version": "0.1.25",
         "news": {
             "0.1.25": {
-                "en": "Updated development dependencies, upgraded @iobroker/testing and @iobroker/adapter-core, and improved adapter metadata compatibility.",
-                "de": "Entwicklungsabhängigkeiten aktualisiert, @iobroker/testing und @iobroker/adapter-core aktualisiert sowie die Kompatibilität der Adapter-Metadaten verbessert."
+            "en": "Updated development infrastructure, upgraded dependencies and improved handling of missing Hyperion instances.",
+            "de": "Entwicklungsumgebung modernisiert, Abhängigkeiten aktualisiert und Fehlerbehandlung für fehlende Hyperion-Instanzen verbessert."
             },
             "0.1.24": {
                 "en": "Maintenance release. Updated adapter metadata and applied ioBroker template improvements.",
