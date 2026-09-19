@@ -2,11 +2,10 @@
     "common": {
         "name": "hyperion_ng",
         "version": "0.1.24",
-        "tier": 3,
         "news": {
             "0.1.24": {
-            "en": "Maintenance release. Updated adapter metadata and applied ioBroker template improvements.",
-            "de": "Wartungsrelease. Adapter-Metadaten aktualisiert und ioBroker-Template-Anpassungen übernommen."
+                "en": "Maintenance release. Updated adapter metadata and applied ioBroker template improvements.",
+                "de": "Wartungsrelease. Adapter-Metadaten aktualisiert und ioBroker-Template-Anpassungen übernommen."
             },
             "0.1.23": {
                 "en": "bugfixing control components",
@@ -98,7 +97,7 @@
                 "js-controller": ">=2.0.0"
             }
         ],
-        "supportStopInstance": 500,
+        "supportStopInstance": true,
         "stopTimeout": 500
     },
     "native": {
