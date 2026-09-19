@@ -9,7 +9,7 @@
     "url": "https://github.com/felixganzer/ioBroker.hyperion_ng/issues"
   },
   "dependencies": {
-    "@iobroker/adapter-core": "^2.4.0",
+    "@iobroker/adapter-core": "^3.4.3",
     "type-of-is": "^3.5.1"
   },
   "description": "this adapter can control hyperionNG with iobroker",
