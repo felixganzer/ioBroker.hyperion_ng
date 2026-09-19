@@ -1,119 +1,120 @@
 {
-    "common": {
-        "name": "hyperion_ng",
-        "version": "0.1.25",
-        "news": {
-            "0.1.25": {
-            "en": "Updated development infrastructure, upgraded dependencies and improved handling of missing Hyperion instances.",
-            "de": "Entwicklungsumgebung modernisiert, Abhängigkeiten aktualisiert und Fehlerbehandlung für fehlende Hyperion-Instanzen verbessert."
-            },
-            "0.1.24": {
-                "en": "Maintenance release. Updated adapter metadata and applied ioBroker template improvements.",
-                "de": "Wartungsrelease. Adapter-Metadaten aktualisiert und ioBroker-Template-Anpassungen übernommen."
-            },
-            "0.1.23": {
-                "en": "bugfixing control components",
-                "de": "Bugfixing control components."
-            },
-            "0.1.22": {
-                "en": "add support for HyperHDR and add config to change communicationDelay",
-                "de": "HyperHDR wird jetzt unterstützt. Ein Configeintrag für den Communication Delay wurde hinzugefügt."
-            },
-            "0.1.21": {
-                "en": "bugfixing of setting color and effect",
-                "de": "Fehlerbehebung beim setzen von Colors und Effecten"
-            },
-            "0.1.17": {
-                "en": "first version which will be released at iobroker",
-                "de": "erste Version, die bei iobroker veröffentlicht wird",
-                "ru": "первая версия, которая будет выпущена на iobroker",
-                "pt": "primeira versão que será lançada na iobroker",
-                "nl": "eerste versie die zal worden uitgebracht op iobroker",
-                "fr": "première version qui sortira chez iobroker",
-                "it": "prima versione che sarà rilasciata su iobroker",
-                "es": "primera versión que se lanzará en iobroker",
-                "pl": "pierwsza wersja, która zostanie wydana w iobroker",
-                "zh-cn": "第一个版本，将在iobroker上发布"
-            },
-            "0.0.1": {
-                "en": "initial release",
-                "de": "Erstveröffentlichung",
-                "ru": "Начальная версия",
-                "pt": "lançamento inicial",
-                "nl": "Eerste uitgave",
-                "fr": "Première version",
-                "it": "Versione iniziale",
-                "es": "Versión inicial",
-                "pl": "Pierwsze wydanie",
-                "zh-cn": "首次出版"
-            }
-        },
-        "titleLang": {
-            "en": "hyperion.NG",
-            "de": "hyperion.NG",
-            "ru": "hyperion.NG",
-            "pt": "hyperion.NG",
-            "nl": "hyperion.NG",
-            "fr": "hyperion.NG",
-            "it": "hyperion.NG",
-            "es": "hyperion.NG",
-            "pl": "hyperion.NG",
-            "zh-cn": "超离子"
-        },
-        "desc": {
-            "en": "this adapter can control HyperionNG",
-            "de": "Dieser Adapter kann HyperionNG steuern",
-            "ru": "этот адаптер может управлять HyperionNG",
-            "pt": "este adaptador pode controlar HyperionNG",
-            "nl": "deze adapter kan HyperionNG aansturen",
-            "fr": "cet adaptateur peut contrôler HyperionNG",
-            "it": "questo adattatore può controllare HyperionNG",
-            "es": "este adaptador puede controlar HyperionNG",
-            "pl": "ten adapter może kontrolować HyperionNG",
-            "zh-cn": "该适配器可以控制HyperionNG"
-        },
-        "authors": [
-            "felixganzer <felixganzer@web.de>"
-        ],
-        "keywords": [
-            "hyperion"
-        ],
-        "licenseInformation": {
-            "type": "free",
-            "license": "MIT"
-        },
-        "platform": "Javascript/Node.js",
-        "main": "main.js",
-        "icon": "hyperion_ng.png",
-        "enabled": true,
-        "extIcon": "https://raw.githubusercontent.com/felixganzer/ioBroker.hyperion_ng/master/admin/hyperion_ng.png",
-        "readme": "https://github.com/felixganzer/ioBroker.hyperion_ng/blob/master/README.md",
-        "loglevel": "info",
-        "tier": 2,
-        "mode": "daemon",
-        "type": "lighting",
-        "compact": true,
-        "materialize": true,
-        "connectionType": "local",
-        "dataSource": "push",
-        "dependencies": [
-            {
-                "js-controller": ">=6.0.11"
-            }
-        ],
-        "supportStopInstance": true,
-        "stopTimeout": 500
+  "common": {
+    "name": "hyperion_ng",
+    "version": "0.1.25",
+    "news": {
+      "0.1.25": {
+        "en": "Updated development infrastructure, upgraded dependencies and improved handling of missing Hyperion instances.",
+        "de": "Entwicklungsumgebung modernisiert, Abhängigkeiten aktualisiert und Fehlerbehandlung für fehlende Hyperion-Instanzen verbessert."
+      },
+      "0.1.24": {
+        "en": "Maintenance release. Updated adapter metadata and applied ioBroker template improvements.",
+        "de": "Wartungsrelease. Adapter-Metadaten aktualisiert und ioBroker-Template-Anpassungen übernommen."
+      },
+      "0.1.23": {
+        "en": "bugfixing control components",
+        "de": "Bugfixing control components."
+      },
+      "0.1.22": {
+        "en": "add support for HyperHDR and add config to change communicationDelay",
+        "de": "HyperHDR wird jetzt unterstützt. Ein Configeintrag für den Communication Delay wurde hinzugefügt."
+      },
+      "0.1.21": {
+        "en": "bugfixing of setting color and effect",
+        "de": "Fehlerbehebung beim setzen von Colors und Effecten"
+      },
+      "0.1.17": {
+        "en": "first version which will be released at iobroker",
+        "de": "erste Version, die bei iobroker veröffentlicht wird",
+        "ru": "первая версия, которая будет выпущена на iobroker",
+        "pt": "primeira versão que será lançada na iobroker",
+        "nl": "eerste versie die zal worden uitgebracht op iobroker",
+        "fr": "première version qui sortira chez iobroker",
+        "it": "prima versione che sarà rilasciata su iobroker",
+        "es": "primera versión que se lanzará en iobroker",
+        "pl": "pierwsza wersja, która zostanie wydana w iobroker",
+        "zh-cn": "第一个版本，将在iobroker上发布"
+      },
+      "0.0.1": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung",
+        "ru": "Начальная версия",
+        "pt": "lançamento inicial",
+        "nl": "Eerste uitgave",
+        "fr": "Première version",
+        "it": "Versione iniziale",
+        "es": "Versión inicial",
+        "pl": "Pierwsze wydanie",
+        "zh-cn": "首次出版"
+      }
     },
-    "native": {
-        "address"           : "127.0.0.1",
-        "json_port"         : 19444,
-        "prio"              : 50,
-        "connectionTimeout" : 1,
-        "communicationDelay" : 50,
-        "prioInternalGrabber": 250,
-        "prioUSBGrabber"    : 240
-
+    "titleLang": {
+      "en": "hyperion.NG",
+      "de": "hyperion.NG",
+      "ru": "hyperion.NG",
+      "pt": "hyperion.NG",
+      "nl": "hyperion.NG",
+      "fr": "hyperion.NG",
+      "it": "hyperion.NG",
+      "es": "hyperion.NG",
+      "pl": "hyperion.NG",
+      "zh-cn": "超离子"
     },
-    "objects": [],
-    "instanceObjects": []
+    "desc": {
+      "en": "this adapter can control HyperionNG",
+      "de": "Dieser Adapter kann HyperionNG steuern",
+      "ru": "этот адаптер может управлять HyperionNG",
+      "pt": "este adaptador pode controlar HyperionNG",
+      "nl": "deze adapter kan HyperionNG aansturen",
+      "fr": "cet adaptateur peut contrôler HyperionNG",
+      "it": "questo adattatore può controllare HyperionNG",
+      "es": "este adaptador puede controlar HyperionNG",
+      "pl": "ten adapter może kontrolować HyperionNG",
+      "zh-cn": "该适配器可以控制HyperionNG"
+    },
+    "authors": [
+      "felixganzer <felixganzer@web.de>"
+    ],
+    "keywords": [
+      "hyperion"
+    ],
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "hyperion_ng.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/felixganzer/ioBroker.hyperion_ng/master/admin/hyperion_ng.png",
+    "readme": "https://github.com/felixganzer/ioBroker.hyperion_ng/blob/master/README.md",
+    "loglevel": "info",
+    "tier": 2,
+    "mode": "daemon",
+    "type": "lighting",
+    "compact": true,
+    "connectionType": "local",
+    "dataSource": "push",
+    "dependencies": [
+      {
+        "js-controller": ">=6.0.11"
+      }
+    ],
+    "supportStopInstance": true,
+    "stopTimeout": 500,
+    "adminUI": {
+      "config": "materialize"
+    }
+  },
+  "native": {
+    "address": "127.0.0.1",
+    "json_port": 19444,
+    "prio": 50,
+    "connectionTimeout": 1,
+    "communicationDelay": 50,
+    "prioInternalGrabber": 250,
+    "prioUSBGrabber": 240
+  },
+  "objects": [],
+  "instanceObjects": []
 }
