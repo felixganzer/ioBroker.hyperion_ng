@@ -68,6 +68,7 @@ You can manually update the data of the whole adaptor, if you set general.contro
 
 
 ### **WORK IN PROGRESS**
+- (ioBroker-Bot) Adapter requires admin >= 7.8.23 now.
 - (ioBroker-Bot) Adapter requires js-controller >= 6.0.11 now.
 
 ### 0.1.23 (2022.01.09)
