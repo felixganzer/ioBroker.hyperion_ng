@@ -158,10 +158,12 @@ You can manually update the data of the whole adaptor, if you set general.contro
 ### 0.0.1 (2020.12.29)
 * (felixganzer) initial release
 
+[Older changelogs can be found there](CHANGELOG_OLD.md)
+
 ## License
 MIT License
 
-Copyright (c) 2020-2021 felixganzer <felixganzer@web.de>
+Copyright (c) 2020-2026 felixganzer <felixganzer@web.de>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

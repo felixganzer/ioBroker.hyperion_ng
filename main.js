@@ -14,7 +14,7 @@ var adapter = null;
 var numberOfInstances = 0;
 
 // Load your modules here, e.g.:
-// const fs = require("fs");
+// const fs = require("node:fs");
 
 class HyperionNg extends utils.Adapter {
 
